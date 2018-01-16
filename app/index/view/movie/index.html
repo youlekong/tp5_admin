@@ -1,0 +1,86 @@
+{extend name='extra@main' /}
+
+	{block name='style'}
+	<style>
+		.form-inline > input{
+			margin-right: 20px;
+		}
+		.btn-group {
+			margin-right: 20px;
+		}
+		.pagaition {
+			text-align: right;
+		}
+	</style>
+	{/block}
+
+	{block name='content'}
+		<header>
+			<div class="page-header">
+			  	<h4>电影列表 <small>index</small>
+			  		<button type="button" class="btn btn-primary new" 
+			  				style="float: right;margin-top: -20px;">新建</button>
+			  	</h4>
+			</div>
+		</header>
+		<form class="form-inline" method="POST" action="/index/index/filter">
+	    	<input type="text" name='id' class="form-control" id="cid" placeholder="id">
+	    	<input type="text" name='title' class="form-control" id="title" placeholder="title">
+	    	<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle sort" 
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				    asc<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a>asc</a></li>
+				    <li><a>desc</a></li>
+				</ul>
+			</div>
+			<input type="text" name='sort' hidden="true" id="sort" value="asc">
+		  	<button type="submit" class="btn btn-default edit">提交</button>
+		</form>
+		<main>
+			<table class="table">
+				<thead>
+					<tr>
+					  	<th>id</th>
+					  	<th>封面</th>
+					  	<th>片名</th>
+					  	<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name='list' id='l'}
+					<tr>
+					  	<td>{$l.id}</td>
+					  	<td><img width="50" height="50" src="{$l.mainpic}"></td>
+					  	<td>{$l.title}</td>
+					  	<td>
+					  		<span>
+					  			<a href="/index/index/edit?id={$l.id}" role="button">编辑</a>
+								<a href="/index/index/delete?id={$l.id}" role="button">删除</a>
+					  		</span>
+					  	</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+			<div class="pagaition">
+				{$list->render()}
+			</div>
+		</main>
+	{/block}
+
+	{block name='script'}
+	<script>
+		$('.btn + .dropdown-menu').on('click', function(e) {
+			var $target = $(e.target)
+			$target.parent().is('li') && $('.btn.dropdown-toggle').text($target.text())
+			$('#sort').val($target.text())
+		})
+
+		$('.btn.btn-primary.new').on('click', function (e) {
+			location.href = '/index/index/edit'
+		})
+	</script>
+	{/block}

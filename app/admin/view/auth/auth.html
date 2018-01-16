@@ -1,0 +1,139 @@
+{__NOLAYOUT__}
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>{if isset($title)}$title{else /}后台管理入口{/if}</title>
+
+    {css href="/static/css/normalize.css" /}
+    {css href="/static/bootstrap/bootstrap.min.css" /}
+    {css href='/static/toastr/toastr.css' /}
+
+    {js href="/static/bootstrap/jquery-3.2.1.min.js" /}
+    {js href="/static/bootstrap/bootstrap.min.js" /}
+    {js href='/static/toastr/toastr.js' /}
+
+    <style>
+        body {
+            background-color: #eee;
+        }
+        .login-box {
+            padding: 20px;
+            background-color: #fafafa;
+            width: 350px;
+            height: 350px;
+            margin: auto;
+            position: relative;
+            top: 20%;
+            border-radius: 5px;
+        }
+        .login-box > form {
+            margin-top: 20px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="login-box">
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a>登录</a></li>
+        <li role="presentation"><a>注册</a></li>
+    </ul>
+    <form id='signIn' action="/admin/auth/signIn" onsubmit="return false;" method="post">
+        <div class="form-group has-feedback">
+            <input type="text" name='name' class="form-control" placeholder="帐号">
+            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+            <input type="password" name='password' class="form-control" placeholder="密码">
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" name='isRemember'> 记住密码</label>
+        </div>
+        <button type="submit" class="btn btn-default" data-type='signIn'>登录</button>
+    </form>
+    <form style="display: none;" id='signUp' onsubmit="return false;" action="/admin/auth/signUp" method="post">
+        <div class="form-group has-feedback">
+            <input type="text" name='name' class="form-control" placeholder="帐号">
+            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+            <input type="password" name='password' class="form-control" placeholder="密码">
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+            <input type="password" name='rePassword' class="form-control" placeholder="确认密码">
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <button type="submit" class="btn btn-default" data-type='signUp'>注册</button>
+    </form>
+</div>
+</body>
+
+<script>
+    $('.nav-tabs > li').on('click', function () {
+        var index = $(this).index();
+        $('.nav-tabs > li').removeClass('active').eq(index).addClass('active');
+        $('.login-box form').css('display', 'none').eq(index).css('display', 'block');
+    });
+
+    $('.btn.btn-default').click(function () {
+        var type = $(this).data('type');
+        var formArr = $('#' + type).serializeArray();
+
+        var params = {};
+        formArr.forEach(function (v) {
+            params[v['name']] = v['value']
+        });
+
+        var hasChinese = false;
+        var flag = Object.keys(params).every( function(v) {
+            var val = $.trim(params[v]);
+            if (val.length === 0 && v === 'name') {
+                toastr.error('帐号不能为空')
+            }
+            if (val.length === 0 && v === 'password') {
+                toastr.error('密码不能为空')
+            }
+            if(escape(decodeURI(val)).indexOf("%u") !== -1) {
+                hasChinese = true;
+                toastr.error('不能包含中文字符')
+            }
+            return (val.length > 0 && hasChinese === false)
+        });
+        if (!flag) return;
+
+        if (params.hasOwnProperty('rePassword')) {
+            if ($.trim(params['rePassword']).length <= 0) {
+                toastr.error('请填写确认密码', {time: 2000, icon:5, offset: 't'})
+                return
+            }
+            if ($.trim(params['rePassword']) !== $.trim(params['password'])) {
+                toastr.error('两次密码不相同', {time: 2000, icon:5, offset: 't'})
+                return
+            }
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '/admin/auth/' + type,
+            data: $('#' + type).serialize(),
+            success: function (res) {
+                if (res.code === 1) {
+                    toastr.options.onHidden = function () {
+                        location.href = res['data']['url']
+                    }
+                    toastr.success(res.msg);
+                } else if (res.code === 0) {
+                    toastr.error(res.msg);
+                }
+            },
+            error: function (err) {
+                toastr.error('登录请求错误');
+            }
+        })
+    })
+</script>
+</html>

@@ -1,0 +1,364 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>doc</title>
+    {css href="/static/css/markdown.css" /}
+    {css href="/static/css/normalize.css" /}
+    {css href="/static/bootstrap/bootstrap.min.css" /}
+    {css href="/static/bootstrap/bootstrap-treeview.min.css" /}
+    {css href='/static/css/common.css'}
+
+    {js href="/static/editormd/lib/marked.min.js" /}
+    {js href="/static/bootstrap/jquery-3.2.1.min.js" /}
+    {js href="/static/bootstrap/bootstrap.min.js" /}
+    {js href="/static/bootstrap/bootstrap-treeview.min.js" /}
+
+    {css href='/static/toastr/toastr.css' /}
+    {js href="/static/toastr/toastr.js" /}
+
+    <style>
+        body {
+            font-size: 62.5%;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            height: 100%;
+        }
+        .nav {
+            height: 4em;
+            width: 100%;
+            background-color: #fff;
+            margin-bottom: 2em;
+        }
+        .side {
+            float: left;
+            width: 25em;
+            height: 100%;
+        }
+        .content {
+            margin-left: 27em;
+            height: 100%;
+            overflow: scroll;
+            padding: 2em;
+        }
+        .new-api {
+            line-height: 4em;
+            height: 100%;
+            padding: 0 2em;
+        }
+        .asda {
+            position: relative;
+            top: 0.5em;
+            margin-left: 2em;
+        }
+    </style>
+</head>
+<body>
+    <header class="nav">
+        <p class='new-api'>
+            <span class='title' style="float: left; font-size: 15px;"></span>
+            <button style="float: right;" type="button" class="asda btn btn-primary" data-toggle="modal"
+                    data-target=".bs-example-modal-lg">新增接口</button>
+            <button style="float: right;" type="button" class="btn-default btn asda editable" >编辑文档</button>
+        </p>
+    </header>
+    <div class="container">
+        <aside class="side">
+            <div id="tree"></div>
+        </aside>
+        <main class="content">
+            <div class="markdown-body"></div>
+        </main>
+    </div>
+    <!-- Large modal -->
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">选择路径<em class='atoast' style="font-size:12px;color: #f00;"></em></h4>
+                </div>
+                <div class="modal-body">
+                    <form class="path-form">
+                        <div class="btn-group btn-group-justified tabs" style="margin-bottom: 2em;" role="group" aria-label="aaaa">
+                            <div class="btn-group tab" role="group">
+                                <button type="button" class="btn btn-default active">选择目录</button>
+                            </div>
+                            <div class="btn-group tab" role="group">
+                                <button type="button" class="btn btn-default">新建目录</button>
+                            </div>
+                        </div>
+                        <div class="form-group dirname dirname-select">
+                            <div class="tag">选择目录（默认为空）</div>
+                            <select class="form-control" name="selectionDir">
+                                <option value="">空</option>
+                            </select>
+                        </div>
+                        <div class="form-group dirname dirname-add" style="display: none;">
+                            <span>新建目录（默认为空）</span>
+                            <input type="text" name='newDir' class="form-control" id="cid" placeholder="新建目录">
+                        </div>
+                        <div class="form-group filename">
+                            <label for="title">文件名<em style="color: #f00;background-color: #fff;">*</em></label>
+                            <input type="text" name='filename' class="form-control" id="cid" placeholder="文件名">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary submit">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function getParams() {
+            let params = location.search.indexOf('?') !== -1 ? location.search.substr(1).split('=') : ''
+            if (params[0] === 'docName')
+                return {'docName': decodeURI(params[1])}
+            else
+                return {'docName': ''}
+        }
+
+        var tag = 0
+        var pathParams = {}
+        window.onload = function () {
+            var params = getParams()
+
+            $('.title').text(params.docName)
+
+            $.ajax({
+                type: 'GET',
+                url: '/doc/index/allDir',
+                data: params,
+                success: function (res) {
+                    if (res.length <= 0) {
+                        $('#tree').html('<div class="none-tree" style="text-align: center; padding: 10px;">暂无数据</div>')
+                        $('.markdown-body').html('<p style="text-align:center;margin:100px;">暂无数据</p>')
+                        $('.editable').css('color', '#aaa')
+                        return
+                    }
+
+                    _handleData(res)
+                    _setTree(gd)
+
+                    var key = Object.keys(res)[0]
+                    var firstObj = res[key]
+                    _getInitPath(key, firstObj)
+                    _ajaxArtile(editPath)
+
+                    _getPathArr(editPath)
+
+                    $('#tree').treeview('selectNode', [ 1, { silent: true } ])
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+            $.ajax({
+                type: 'POST',
+                url: '/doc/index/getDir',
+                data: params,
+                success: function(res) {
+                    var el = ''
+                    var directory = res.directory || []
+                    directory.forEach(function(v, k) {
+                        el += '<option value=' + v + '>' + v + '</option>'
+                    })
+                    $('.dirname-select > .form-control').append(el)
+                },
+                error: function(err) {
+                    console.log(err)
+                }
+            })
+        }
+
+        /**
+         * 	获取第一条数据
+         */
+        var editPath = ''
+        function _getInitPath(dir, data) {
+            if (!data) return
+
+            if (data.constructor === Array) {
+                data.forEach(function(v, k) {
+                    if (k === 0) {
+                        _getInitPath('', v)
+                        editPath = dir + '/' + v
+                    }
+                })
+            } else if (data.constructor === String) {
+                editPath += data
+            }
+        }
+
+        /**
+         * 点击目录
+         */
+        var path = ''
+        function _setTree(data) {
+            path = ''
+            $('#tree').treeview({
+                data: data,         // data is not optional
+                backColor: '#fff',
+                onNodeSelected: function(event, data) {
+                    if (data.hasOwnProperty('nodes')) return
+
+                    path = '/' + data.text
+                    data.hasOwnProperty('parentId') && _getPath(data.nodeId)
+
+                    _ajaxArtile(path)
+                    _getPathArr(path)
+                }
+            })
+        }
+
+        function _ajaxArtile(path) {
+            $.ajax({
+                type: 'GET',
+                url: '/doc/index/getArticle',
+                data: Object.assign(getParams(), {'path': path}),
+                success: function(res) {
+                    if (res.code === 1) {
+                        var template = '<p style="text-align:center;margin:100px;">暂无数据</p>'
+                        res.msg.length <= 0 ? res.msg = template : res.msg
+                        $('.content .markdown-body').html(marked(res.msg))
+                    } else {
+                        toastr.warning(res.msg)
+                    }
+                },
+                error: function(err) {
+                    console.log(err)
+                }
+            })
+        }
+
+        function _getPath(pid) {
+            var parent = $('#tree').treeview('getParent', pid)
+            path = '/' + parent.text + path
+            if (parent.hasOwnProperty('parentId') && parent.parentId) {
+                _getPath(parent.parentId)
+            }
+        }
+
+        /*
+         生成目录
+         */
+        var gd = []
+        function _handleData(data, flag = true) {
+            var arr = []
+            for(var k in data) {
+                v = data[k]
+                var obj = {}
+                if (typeof v === 'string') {
+                    obj = {'text': v}
+                    if (flag)
+                        gd.push(obj)
+                    else
+                        arr.push(obj)
+                } else if (typeof v === 'object') {
+                    obj = {'text': k, nodes: []}
+                    obj.nodes = obj.nodes.concat( _handleData(v, false) )
+                    gd.push(obj)
+                }
+            }
+            return arr
+        }
+
+        /**
+         * 	点击事件
+         */
+        $('.btn-group.tab').on('click', function(e) {
+            var index = $(this).index()
+            tag = index
+            $('.tab > .btn').removeClass('active').eq(index).addClass('active')
+            $('.dirname').css('display', 'none').eq(index).css('display', 'block')
+        })
+
+        /**
+         *  新增接口提交
+         */
+        $('.submit').click(function() {
+            var data = $('.path-form').serialize()
+            data = _paramsFromForm(data)
+            data.type = tag
+            if (data.filename.trim().length <= 0) {
+                $('.atoast').text('文件名不能为空')
+                return
+            }
+            data = Object.assign(data, getParams())
+
+            $.ajax({
+                type: 'POST',
+                url: '/doc/index/path',
+                data: _serializeData(data),
+                success: function(res) {
+                    if (!res.code) {
+                        $('.atoast').text('创建失败，请换个文件名')
+                    } else {
+                        $('.modal.fade.bs-example-modal-lg').modal('hide')
+                        $('.modal.fade.bs-example-modal-lg').on('hidden.bs.modal', function () {
+                            params = _serializeData(Object.assign(res.msg, getParams()))
+                            location.href = '/doc/index/edit?' + params
+                        });
+                    }
+                },
+                error: function(err) {
+                    console.log(err)
+                }
+            })
+        })
+
+        /*
+         编辑文档
+         */
+        $('.editable').click(function() {
+            if ($('#tree').find('.none-tree').html() )
+                return
+
+            location.href = '/doc/index/edit?' + _serializeData(pathParams)
+        })
+        function _getPathArr(path) {
+            var pathArr = path.split('/')
+            var pos = pathArr.indexOf('')
+            if (pos !== -1)
+                pathArr.splice(pos, 1)
+
+            if (pathArr.length == 1)
+                pathParams.filename = pathArr[0]
+            if (pathArr.length > 1) {
+                pathParams.filename = pathArr.pop()
+                pathParams.directory = pathArr.join('/')
+            }
+            pathParams = Object.assign(pathParams, getParams())
+        }
+
+        /*
+         post data tools
+         */
+        function _paramsFromForm (form) {
+            var params = {}
+            form = decodeURIComponent(form, true)
+            form.split('&').forEach(function (v, k) {
+                var sArr = v.split('=')
+                if (sArr.length === 2) {
+                    params[sArr[0]] = sArr[1]
+                } else {
+                    sArr.splice(0, 1)
+                    params[sArr[0]] = sArr.join('=')
+                }
+            })
+            return params
+        }
+        function _serializeData (data) {
+            return Object.keys(data).map( (keyName) => {
+                    return encodeURIComponent(keyName) + '=' + encodeURIComponent(data[keyName])
+                }).join('&')
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<script>
+    $(function () {
+        toastr.success('{$Think.session.success_message}');
+        setTimeout(function(){
+            window.history.go(-1);
+        },2000)
+    });
+</script>

@@ -1,0 +1,7 @@
+.idea
+runtime
+thinkphp
+vendor
+*.log
+local_log.txt
+

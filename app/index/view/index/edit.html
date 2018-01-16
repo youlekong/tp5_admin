@@ -1,0 +1,299 @@
+{extend name='extra@main' /}
+
+	{block name='style'}
+		<style>
+			.tag {
+				padding: 5px 0; 
+			}
+			.a-upload {
+			    padding: 4px 10px;
+			    position: relative;
+			    color: #888;
+			    background: #fafafa;
+			    border: 1px solid #ddd;
+			    border-radius: 4px;
+			    overflow: hidden;
+			    display: inline-block;
+			    *display: inline;
+			    *zoom: 1;
+			    width: 100%;
+    			text-align: center;
+    			vertical-align: middle;
+			}
+
+			.a-upload  input {
+			    position: absolute;
+			    font-size: 100px;
+			    height: 100%;
+			    width: 100%;
+			    right: 0;
+			    top: 0;
+			    opacity: 0;
+			    filter: alpha(opacity=0);
+			    cursor: pointer
+			}
+
+			.a-upload:hover {
+			    color: #444;
+			    background: #eee;
+			    border-color: #ccc;
+			    text-decoration: none
+			}
+
+			.thumbnail {
+				overflow: hidden;
+				padding: 100% 0 0;
+    			position: relative;
+			}
+			.thumbnail > img {
+			    position: absolute;
+			    width: 100%; 
+			    left: 0; top: 0;
+			}
+		</style>
+	{/block}
+
+	{block name='content'}
+		<div class="page-header">
+		  <h4>新增 <small>edit</small></h4>
+		</div>
+		<form id='edit-form' onsubmit="return false">
+		  	<div class="form-group">
+		    	<label for="title">名称</label>
+		    	<input name='title' value="{php}if(isset($list))echo $list['title']{/php}" type="text" class="form-control" id="title" placeholder="名称">
+		  	</div>
+
+			<div class="form-group">
+				<div class="tag">状态</div>
+				<select class="form-control" name="status" value="{php}if(isset($list))echo $list['status']{/php}">
+					<option>A</option>
+				  	<option>B</option>
+				  	<option>C</option>
+				  	<option>D</option>
+				  	<option>E</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<div class="row">
+					<div class="col-md-4">
+						<div class="tag">重量</div>
+						<select class="form-control" name="weight" value="{php}if(isset($list))echo $list['weight']{/php}">
+							<option>100</option>
+						  	<option>200</option>
+						  	<option>300</option>
+						  	<option>400</option>
+						  	<option>500</option>
+						</select>
+					</div>
+					<div class="col-md-4">
+						<div class="tag">高度</div>
+						<select class="form-control" name='height' value="{php}if(isset($list))echo $list['height']{/php}">
+							<option>1000</option>
+						  	<option>2000</option>
+						  	<option>3000</option>
+						  	<option>4000</option>
+						  	<option>5000</option>
+						</select>
+					</div>
+					<div class="col-md-4">
+						<div class="tag">长度</div>
+						<select class="form-control" name='length' value="{php}if(isset($list))echo $list['length']{/php}">
+							<option>0.1</option>
+						  	<option>0.2</option>
+						  	<option>0.3</option>
+						  	<option>0.4</option>
+						  	<option>0.5</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group image">
+				<div class="tag">上传图片（双击删除）</div>
+				<div class="row imgs">
+				{if condition="isset($list)"}
+					{volist name="$list['imgs']" id="vo" key="k"}
+						<div class="col-xs-6 col-md-2" data-idx='{$k-1}'>
+							<!-- style="height: 171px;overflow: hidden;" -->
+					    	<a class="thumbnail" ondblclick="delImg(this)">
+					      		<img src="{$vo}">
+					    	</a>
+					  	</div>
+					{/volist}
+				{/if}
+				</div>
+				<div class="row">
+					<div class="col-xs-6 col-md-2">
+				    	<a class="a-upload">
+				    		添加图片
+				    		<input type="file" name='img' id='file' multiple="multiple">
+				    	</a>
+				  	</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div id="editormd">
+				    <textarea style="display:none;" name="comment">{php}if(isset($list))echo $list['comment']{/php}</textarea>
+				</div>
+			</div>
+
+		  	<button type="submit" class="btn btn-default">提交</button>
+		</form>
+
+	{/block}
+
+	{block name='script'}
+		<script>
+			var imgArr = []
+
+			$('.imgs .thumbnail').each(function() {
+				var url = $(this).find('img').attr('src')
+				imgArr.push(url)
+			})
+
+			function createTpl(data) {
+				var tpl = '<div class="col-xs-6 col-md-2" data-idx=' + (imgArr.length-1) + '>\
+		    				<a class="thumbnail" style="height: 171px;overflow: hidden;" ondblclick="delImg(this)">\
+		      					<img src="'+ data +'">\
+		    				</a>\
+		  				</div>'
+		  		return tpl
+			}
+
+			function renderImg(imgData) {
+				if (imgArr.length === 1) $('.image').find('.imgs').empty()
+
+				$('.image').find('.imgs').append(createTpl(imgData))
+			}
+
+			$(function() {
+		        var editor = editormd({
+		            id   : "editormd",
+		            path : "/static/editormd/lib/",
+		            height : 720,
+		        });
+		    });
+
+		    $('.a-upload > input').change(function() {
+		    	var files = document.getElementById('file').files
+		    	for(var i = 0; i < files.length; i++) {
+		    		var reader = new FileReader()
+		    		reader.readAsDataURL(files[i])
+		    		reader.onload = function() {
+		    			_compressImg(this.result, 300, function(data){
+							imgArr.push(data) 
+		    				renderImg(data)
+						})
+		    		}
+		    	}
+		    })
+
+		    function delImg(target) {
+		    	if (imgArr.length <= 0) return
+
+		    	var idx = $(target).parent().data('idx')
+
+		    	if (imgArr[idx].indexOf('/uploads/tp_') !== -1) {
+		    		var data = location.search.substring(1)
+		    		data += '&name=' + imgArr[idx]
+		    		$.ajax({
+		    			type: "POST",
+		    			url: '/index/index/delImg',
+		    			data: data,
+		    			success: function (res) {
+		    				console.log(res)
+		    			},
+		    			error: function (err) {
+		    				console.log(err)
+		    			}
+		    		})
+		    	}
+
+		    	imgArr[idx] = null
+
+		    	$(target).parent().remove()
+		    }
+
+			function resultImg() {
+				return imgArr.filter(function(v) {
+					return v
+				})
+			}
+
+			$('.btn.btn-default').click(function() {
+		    	var form = $('#edit-form').serialize()
+		    	form = paramsFromForm(form)
+		    	form.htmlcomment = marked(form.comment)
+
+		    	if ($.trim(form.title).length <= 0) {
+		    		toastr.warning('标题不能为空')
+		    		return
+		    	}
+
+		    	var fd = new FormData()
+		    	for (key in form) {
+		    		fd.append(key, form[key])
+		    	}
+		    	var imgs = resultImg()
+		    	imgs.forEach( function(v, k) {
+		    		fd.append('imgs[]', v)
+		    	})
+
+		    	_ajax(fd, function(res) {
+		    		if (res.code === 1) {
+		    			toastr.options.onHidden = function() { history.back()}
+		    			toastr.warning(res.msg)
+		    		} else if (res.code === 0) {
+		    			toastr.warning(res.msg)
+		    		}
+		    	})
+		    })
+
+		    function _ajax(data, cb) {
+		    	var xml = new XMLHttpRequest()
+		    	xml.open("POST", '/index/index/edit' + location.search, true)
+		    	xml.onreadystatechange = function() {
+		    		if (xml.readyState !== 4) return
+		    		if (xml.status === 200) {
+		    			var res = null
+		    			try {
+		    				res = JSON.parse(xml.responseText)
+		    			} catch(e) {
+		    				console.log(e)
+		    			}
+		    			if (cb && typeof cb === 'function') cb(res)
+		    		}
+		    	}
+		    	xml.send(data)
+		    }
+
+		    function _compressImg(imgData, maxHeight, onCompress){
+				if(!imgData)return;
+				onCompress = onCompress || function(){};
+
+				var canvas = document.createElement('canvas');
+
+				var img = new Image();
+				img.onload = function(){ 
+					if(img.height > maxHeight) {						//按最大高度等比缩放
+						img.width *= maxHeight / img.height; 
+						img.height = maxHeight; 
+					}
+					var ctx = canvas.getContext("2d"); 
+					ctx.clearRect(0, 0, canvas.width, canvas.height); 	// canvas清屏 	
+			        //重置canvans宽高
+					canvas.width = img.width;
+					canvas.height = img.height;	
+					ctx.drawImage(img, 0, 0, img.width, img.height); 	// 将图像绘制到canvas上 
+
+					onCompress(canvas.toDataURL("image/png", 0.8));		//必须等压缩完才读取canvas值，否则canvas内容是黑帆布
+				};
+				// 记住必须先绑定事件，才能设置src属性，否则img没内容可以画到canvas
+				img.src = imgData;
+			}
+
+		</script>
+	{/block}
+

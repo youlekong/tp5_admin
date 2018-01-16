@@ -1,0 +1,38 @@
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>{$title}</title>
+
+        {css href="/static/css/normalize.css" /}
+		{css href="/static/bootstrap/bootstrap.min.css" /}
+		{css href="/static/bootstrap/bootstrap-treeview.min.css" /}
+		{css href='/static/css/common.css'}
+
+		{js href="/static/bootstrap/jquery-3.2.1.min.js" /}
+		{js href="/static/bootstrap/bootstrap.min.js" /} 
+		{js href="/static/bootstrap/bootstrap-treeview.min.js" /}
+
+		{css href='/static/editormd/editormd.min.css'}
+		{js href='/static/editormd/editormd.min.js'}
+		{js href='/static/echart/echarts.js'}
+
+		{css href='/static/toastr/toastr.css' /}
+		{js href="/static/toastr/toastr.js" /}
+
+		{block name='style'}{/block}
+	</head>
+
+    <body>
+    	{include file='extra@top' /}
+		{include file='extra@left' /}
+
+		<section class="content">
+			{block name='content'}{/block}
+		</section>
+
+		{js href="/static/js/common.js" /}
+		
+		{block name='script'}{/block}
+    </body>
+</html>

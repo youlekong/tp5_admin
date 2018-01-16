@@ -1,0 +1,247 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>doc</title>
+    {css href="/static/css/markdown.css" /}
+    {css href="/static/css/normalize.css" /}
+    {css href="/static/bootstrap/bootstrap.min.css" /}
+    {css href="/static/bootstrap/bootstrap-treeview.min.css" /}
+    {css href='/static/css/common.css'}
+
+    {js href="/static/bootstrap/jquery-3.2.1.min.js" /}
+    {js href="/static/bootstrap/bootstrap.min.js" /}
+
+    {css href='/static/toastr/toastr.css' /}
+    {js href="/static/toastr/toastr.js" /}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        textarea, input, select {
+            border:0;
+            background-color:transparent;
+            color: #666464;
+            height: auto;
+        }
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+        }
+        span {
+            font-size: 15px;
+            color: #666;
+        }
+        .nav {
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            padding: 0 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+        }
+        .right {
+            float: right;
+            line-height: 40px;
+        }
+
+        .writing, .preview {
+            float: left;
+            width: 50%;
+            transition: width 1s ease, opacity 0.25s ease;
+            background-color: #fff;
+        }
+        .writing-ca {
+            width: 100%;
+        }
+        .preview-ca {
+            width: 0;
+            opacity: 0;
+        }
+        #title {
+            background-color: #eee;
+            width: 100%;
+            height: 40px;
+            padding: 20px;
+            border-bottom: 1px solid #aaa;
+        }
+        #md, #txt {
+            width: 100%;
+            padding: 20px;
+        }
+        #md {
+            background-color: #eee;
+            height: 100%;
+        }
+        .mode, .save {
+            padding: 8px 10px;
+            background-color: #337ab7;
+            color: #fefefe;
+            border-radius: 5px;
+            margin-left: 20px;
+        }
+        .mode {
+            background-color: #fff;
+            border: 1px solid #eee;
+            color: #000;
+        }
+    </style>
+    {js href="/static/bootstrap/jquery-3.2.1.min.js" /}
+    {js href="/static/editormd/lib/marked.min.js" /}
+</head>
+<body>
+    <div class="wrap">
+        <header class="nav">
+            <form class="form-inline" method="POST" action="">
+                <span style="margin-right: 30px;">目录名：<em class="directory"></em></span>
+                <span>文件名：<em class="filename"></em></span>
+                <div class="right">
+                    <button type="button" class="btn-default btn mode" >写作模式</button>
+                    <button type="button" class="btn-primary btn save" >保存</button>
+                </div>
+            </form>
+        </header>
+        <div style="overflow: auto; background: #fff;">
+            <section class="writing">
+                <input type="text" id='title' placeholder="标题">
+                <textarea name="md" id="md" placeholder="正文"></textarea>
+            </section>
+            <section class="preview">
+                <div class='markdown-body' id="txt"></div>
+            </section>
+        </div>
+    </div>
+</body>
+<script>
+    var params = {}
+    window.onload = function() {
+        var paramsStr = location.search.substring(1)
+        params = _paramsFromForm(paramsStr)
+        $('.directory').text(params.directory)
+        $('.filename').text(params.filename)
+
+        $.ajax({
+            type: 'POST',
+            url: '/doc/index/getDir',
+            data: paramsStr,
+            success: function(res) {
+                var el = ''
+                var directory = res.directory || []
+                directory.forEach(function(v, k) {
+                    el += '<li><a>'+ v +' </a></li>'
+                })
+                $('.dropdown-menu').append(el)
+
+                var article = res.article ? res.article : ''
+                $('#txt').html(marked(article))
+
+                var pos = article.indexOf('\n')
+                if (pos > 0) {
+                    $('#title').val(article.substring(0, pos))
+                    $('#md').val(article.substring(pos + 1))
+                }
+            },
+            error: function(err) {
+                console.log(err)
+            }
+        })
+    }
+
+    /*
+     目录
+     */
+    $('.dropdown-menu').on('click', function(e) {
+        var $target = $(e.target)
+        $('.btn.dropdown-toggle').html($target.text() + '<span class="caret"></span>')
+    })
+
+    /*
+     输入事件
+     */
+    $('#md').keyup(function() {
+        var val = $('#md').val()
+        var title = $('#title').val()
+        article = marked('##' + title + '\n' + val)
+
+        setTimeout(function() {
+            $('#txt').html(article)
+        }, 1000)
+    })
+    $('#title').keyup(function() {
+        var val = $('#md').val()
+        var title = $('#title').val()
+        article = marked('##' + title + '\n' + val)
+
+        setTimeout(function() {
+            $('#txt').html(article)
+        }, 1000)
+    })
+
+    /*
+     切换模式
+     */
+    $('.nav .mode').click(function() {
+        var text = $('.nav .mode').text().trim()
+
+        if (text === '预览模式') {
+            $('#title').parent().removeClass('writing-ca')
+            $('#txt').parent().removeClass('preview-ca')
+            $('.nav .mode').text('写作模式')
+        } else if (text === '写作模式'){
+            $('#title').parent().addClass('writing-ca')
+            $('#txt').parent().addClass('preview-ca')
+            $('.nav .mode').text('预览模式')
+        }
+    })
+
+    /*
+     保存事件
+     */
+    $('.nav .save').click(function() {
+        var val = $('#md').val()
+        var title = $('#title').val()
+        article = title.indexOf('#') !== -1 ? title + '\n' + val : '##' + title + '\n' + val
+        var data = {article}
+        data = Object.assign(data, params)
+        $.ajax({
+            type: "POST",
+            url: '/doc/index/save',
+            data: _serializeData(data),
+            success: function (res) {
+                // console.log(res)
+                if (res.code) {
+                    toastr.options.onHidden = function() { history.back()}
+                    toastr.warning('保存成功')
+                } else {
+                    toastr.warning('保存失败')
+                }
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+    })
+
+    /*
+     post data tools
+     */
+    function _paramsFromForm (form) {
+        var params = {}
+        form = decodeURIComponent(form, true)
+        form.split('&').forEach(function (v, k) {
+            var sArr = v.split('=')
+            if (sArr.length === 2) {
+                params[sArr[0]] = sArr[1]
+            } else {
+                sArr.splice(0, 1)
+                params[sArr[0]] = sArr.join('=')
+            }
+        })
+        return params
+    }
+    function _serializeData (data) {
+        return Object.keys(data).map( (keyName) => {
+                return encodeURIComponent(keyName) + '=' + encodeURIComponent(data[keyName])
+            }).join('&')
+    }
+</script>
+</html>

@@ -1,0 +1,131 @@
+<div class="row">
+    <div class="pad margin no-print">
+        <div class="callout callout-info" style="margin-bottom: 0!important;">
+            <h4><i class="fa fa-info"></i> 你好,admin:</h4>
+            欢迎来到后台管理系统，左侧为菜单区域，右侧为功能区。
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-aqua">
+            <div class="inner">
+                <h3>{$adminuser_count}</h3>
+                <p>后台用户</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-user"></i>
+            </div>
+            <a href="{:url('admin_user/index')}" class="small-box-footer">更多<i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-green">
+            <div class="inner">
+                <h3>{$admin_log_count}</h3>
+
+                <p>操作日志</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-keyboard-o"></i>
+            </div>
+            <a href="{:url('admin_log/index')}" class="small-box-footer">更多<i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-yellow">
+            <div class="inner">
+                <h3>{$syslog_count}</h3>
+
+                <p>错误日志</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa fa-info-circle"></i>
+            </div>
+            <a href="{:url('syslog/index')}" class="small-box-footer">更多<i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-red">
+            <div class="inner">
+                <h3>{$admin_menu_count}</h3>
+
+                <p>菜单数量</p>
+            </div>
+            <div class="icon">
+                <i class="fa fa-list"></i>
+            </div>
+            <a href="{:url('admin_menu/index')}" class="small-box-footer">更多<i class="fa fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">访问信息</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-hover table-bordered">
+                    <tbody>
+                    <tr>
+                        <td>您的系统</td>
+                        <td>ip地址</td>
+                        <td>浏览器</td>
+                        <td>城市</td>
+                    </tr>
+                    <tr>
+                        <td>{$sys.os}</td>
+                        <td>{$sys.ip}</td>
+                        <td>{$sys.browser}</td>
+                        <td>{$sys.city}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+</div>
+
+<div class="col">
+    <div class="box box-info">
+        <div class="box-header"><h3 class="box-title">{:__('Server info')}</h3></div>
+        <div class="box-body">
+            <table class="table table-striped">
+                <tbody>
+                <tr>
+                    <td width="120px">{:__('PHP版本')}</td>
+                    <td>{$Think.const.PHP_VERSION}</td>
+                </tr>
+                <tr>
+                    <td width="120px">{:__('运行环境')}</td>
+                    <td>{:php_sapi_name()}</td>
+                </tr>
+                <tr>
+                    <td width="120px">{:__('开启调试')}</td>
+                    <td>{$Think.config.app_debug?__('Yes'):__('No')}</td>
+                </tr>
+                <tr>
+                    <td width="120px">{:__('服务器')}</td>
+                    <td>{$Think.server.SERVER_SOFTWARE}</td>
+                </tr>
+                <tr>
+                    <td width="120px">{:__('时区')}</td>
+                    <td>{:date_default_timezone_get()}</td>
+                </tr>
+                </tbody></table>
+        </div>
+    </div>
+</div>
