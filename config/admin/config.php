@@ -85,5 +85,27 @@ return [
 
 
     //分页配置
+    //分页配置
+    'paginate'               => [
+        'type'      => 'bootstrap',
+        'var_page'  => 'page',
+        'list_rows' => 10,
+    ],
+
+    // auth配置
+    'admin_auth'=>[
+        'auth_on'           => 1, // 权限开关
+        'auth_type'         => 1, // 认证方式，1为实时认证；2为登录认证。
+        'auth_group'        => 'admin_groups', // 用户组数据表名
+        'auth_group_access' => 'admin_group_access', // 用户-用户组关系表
+        'auth_rule'         => 'admin_menus', // 权限规则表
+        'auth_user'         => 'admin_users', // 用户信息表
+    ],
+
+    //后台用户头像相关设置
+    'admin_avatar'               => [
+        'upload_path' => ROOT_PATH . 'public' . DS . 'uploads' . DS . 'admin' . DS . 'avatar' . DS,
+        'upload_url' => DS . 'uploads' . DS . 'admin' . DS . 'avatar' . DS,
+    ],
 
 ];

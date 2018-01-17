@@ -8,9 +8,11 @@ use think\Session;
 use tools\Tree;
 use think\Db;
 use app\admin\model\AdminUsers;
+use app\admin\model\AdminMenus;
 
 class Backend extends Controller
 {
+
     public function _initialize()
     {
         $auth = new AdminAuth();
@@ -21,12 +23,11 @@ class Backend extends Controller
 
     protected function fetch($template = '', $vars = [], $replace = [], $config = [])
     {
-        $site = [];
         parent::assign([
-            'site' => $site,
             'menus' => $this->getLeftMenu(),
             'sys' => $this->getSysInfo(),
-            'user' => $this->getUserInfo()
+            'user' => $this->getUserInfo(),
+            'site' => $this->getSite()
         ]);
         return parent::fetch($template, $vars, $replace, $config);
     }
@@ -41,6 +42,18 @@ class Backend extends Controller
             'city'    => $sysInfo->getCity(),
             'date'    => date('Y-m-d')
         ];
+    }
+
+    public function getSite() {
+        $url = parse_name($this->request->module()) .
+            '/' . parse_name($this->request->controller()) .
+            "/" . parse_name($this->request->action());
+        $menu_info = AdminMenus::get(['url' => $url]);
+
+        if (!$menu_info)
+            return [];
+
+        return ['title' => $menu_info['title'], 'url' => parse_name($this->request->action())];
     }
 
     public function getUserInfo() {
@@ -103,5 +116,15 @@ class Backend extends Controller
         $tree->text['other']   = $text_other;
 
         return $tree->get_authTree(0, $current_id, $parent_ids);
+    }
+
+    // ajax成功
+    public function ajaxSuccess($msg, $data = null) {
+        $this->result($data, 1, $msg);
+    }
+
+    // ajax失败
+    public function ajaxError($msg, $data = null) {
+        $this->result($data, 0, $msg);
     }
 }
