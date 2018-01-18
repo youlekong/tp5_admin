@@ -5,6 +5,7 @@ namespace app\admin\controller;
 use app\admin\common\Backend;
 use app\admin\model\AdminGroups;
 use app\admin\model\AdminUsers;
+use app\admin\model\AdminGroupAccess;
 
 class AdminUser extends Backend
 {
@@ -136,11 +137,19 @@ class AdminUser extends Backend
 
     public function del() {
         $id = $this->request->param('id');
+
         $result = AdminUsers::destroy(function ($query) use ($id) {
             $query->whereIn('id', $id);
         });
+
         if ($result) {
-            return $this->success('删除成功');
+            //删除用户与角色关联记录
+            $adminGroupAccess = new AdminGroupAccess();
+            $result = $adminGroupAccess->whereIn('uid', $id)->delete();
+            if (!$result) {
+                return $this->error('角色关联数据删除失败！');
+            }
+            return $this->success();
         }
 
         return $this->error('删除失败');
