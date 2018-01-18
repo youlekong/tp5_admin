@@ -33,12 +33,18 @@ class AdminUsers extends Model
 
     public function getAvatarAttr($value)
     {
-        if (false === strpos($value, 'http://') && false === strpos($value, 'https://')) {
+        if (false === strpos($value, 'http://')
+            && false === strpos($value, 'https://')
+            && !empty($value)) {
             $path = ROOT_PATH . 'public' . config('admin_avatar.upload_url');
             if (!is_dir($path))
                 @mkdir($path);
             $value = config('admin_avatar.upload_url'). $value;
         }
         return $value;
+    }
+
+    public function  getAvatarNameAttr($value, $data) {
+        return $data['avatar'];
     }
 }

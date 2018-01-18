@@ -12,6 +12,7 @@ use app\admin\model\AdminMenus;
 
 class Backend extends Controller
 {
+    protected $refererUrl;
 
     public function _initialize()
     {
@@ -126,5 +127,32 @@ class Backend extends Controller
     // ajax失败
     public function ajaxError($msg, $data = null) {
         $this->result($data, 0, $msg);
+    }
+
+    protected function success($msg = '操作成功', $url = null, $data = '', $wait = 3, array $header = [])
+    {
+        if ($url == null) {
+            if ($this->request->server('HTTP_REFERER') != null) {
+                $url = $this->request->server('HTTP_REFERER');
+            } else {
+                $url = 'admin/index/index';
+            }
+        }
+
+        $this->redirect($url, $data, 302, ['success_message' => $msg]);
+    }
+
+
+    protected function error($msg = '操作失败', $url = null, $data = '', $wait = 3, array $header = [])
+    {
+        if ($url == null) {
+            if ($this->request->server('HTTP_REFERER') != null) {
+                $url = $this->request->server('HTTP_REFERER');
+            } else {
+                $url = 'admin/index/index';
+            }
+        }
+
+        $this->redirect($url, $data, 302, ['error_message' => $msg, 'form_info' => $this->request->param()]);
     }
 }
