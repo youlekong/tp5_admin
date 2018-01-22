@@ -36,7 +36,7 @@ return [
         // 模板文件名分隔符
         'view_depr'    => DS,
         // 布局模板
-        'layout_on'     =>  true,
+        'layout_on'     =>  false,
         'layout_name'   =>  'template/layout',
         'layout_item'   =>  '[__REPLACE__]'
     ],

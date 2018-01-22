@@ -33,7 +33,7 @@ class AdminMenu extends Backend
             $result[$n]['parent_id_node'] = ($r['parent_id']) ? ' class="child-of-node-' . $r['parent_id'] . '"' : '';
 
             $result[$n]['str_manage'] =
-                '<a href="' . 'admin_menu/edit?' . 'id=' . $r['id'] .
+                '<a href="' . '{:hash_edit($r[\'id\'], \'admin/admin_menu/\')}' . 'id=' . $r['id'] .
                 '" class="btn btn-primary btn-xs" title="编辑"><i class="fa fa-pencil"></i></a>
                 ';
 

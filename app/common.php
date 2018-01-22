@@ -59,3 +59,10 @@ if(!function_exists('parse_name')){
         }
     }
 }
+
+// edit?id={$list.id}
+if (!function_exists('hash_edit')) {
+    function hash_edit($id, $module) {
+        return '#sub=' . $module . 'edit?id=' . $id;
+    }
+}

@@ -75,7 +75,7 @@ class Backend extends Controller
         $parent_ids = array(0 => 0);
 
         foreach ($menu as $k => $v) {
-            $url               = url($v['url']);
+            $url               = '#sub=' . $v['url'];//url($v['url']);
             $menu[$k]['icon']  = !empty($v['icon']) ? $v['icon'] : 'fa fa-list';
             $menu[$k]['level'] = $tree->get_level($v['id'], $menu);
             $max_level         = $max_level <= $menu[$k]['level'] ? $menu[$k]['level'] : $max_level;
