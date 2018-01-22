@@ -66,3 +66,21 @@ if (!function_exists('hash_edit')) {
         return '#sub=' . $module . 'edit?id=' . $id;
     }
 }
+
+if (!function_exists('hash_add')) {
+    function hash_add() {
+        $url = request()->pathinfo();
+        $arr = explode('/', $url);
+        if (end($arr) === 'index') {
+            $arr[count($arr) - 1] = 'add';
+            $url = implode('/', $arr);
+        } else {
+            $newArr = array_filter($arr, function($v) {
+                return $v != '';
+            }, ARRAY_FILTER_USE_BOTH);
+            $url = implode('/', $newArr);
+            $url = $url . '/add';
+        }
+        return '#sub=' . $url;
+    }
+}

@@ -30,6 +30,11 @@ class Index extends Backend {
             'admin_menu_count' => $admin_menu_count
         ]);
 
-        return $this->fetch();
+        return $this->fetch('index');
+
+    }
+
+    public function dashboard() {
+        return $this->fetch('template/layout');
     }
 }
