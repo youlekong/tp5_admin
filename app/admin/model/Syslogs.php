@@ -10,8 +10,8 @@ class Syslogs extends Model
     protected $autoWriteTimestamp = true;
     protected $updateTime = false;
 
-//    public function syslogTrace()
-//    {
-//        return $this->hasOne('SyslogTrace','log_id','id')->field('trace_id,log_id,trace');
-//    }
+    public function syslogTrace()
+    {
+        return $this->hasOne('SyslogTrace','log_id','id')->field('trace_id,log_id,trace');
+    }
 }
