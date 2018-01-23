@@ -60,7 +60,6 @@ if(!function_exists('parse_name')){
     }
 }
 
-// edit?id={$list.id}
 if (!function_exists('hash_edit')) {
     function hash_edit($id, $module) {
         return '#sub=' . $module . 'edit?id=' . $id;
@@ -80,6 +79,24 @@ if (!function_exists('hash_add')) {
             }, ARRAY_FILTER_USE_BOTH);
             $url = implode('/', $newArr);
             $url = $url . '/add';
+        }
+        return '#sub=' . $url;
+    }
+}
+
+if (!function_exists('hash_view')) {
+    function hash_view($id) {
+        $url = request()->pathinfo();
+        $arr = explode('/', $url);
+        if (end($arr) === 'index') {
+            $arr[count($arr) - 1] = 'view';
+            $url = implode('/', $arr) . '?id=' . $id;
+        } else {
+            $newArr = array_filter($arr, function($v) {
+                return $v != '';
+            }, ARRAY_FILTER_USE_BOTH);
+            $url = implode('/', $newArr);
+            $url = $url . '/view';
         }
         return '#sub=' . $url;
     }
