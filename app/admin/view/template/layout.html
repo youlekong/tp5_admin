@@ -103,9 +103,7 @@
         </aside>
         <div class="content-wrapper">
             <section class="content-header">
-                <h1>
-                    Dashboard
-                </h1>
+                <h1 class="title"></h1>
                 <ol class="breadcrumb">
                     {if isset($webData['current_nav']) && !empty($webData['current_nav'])}
                     <li><a href="{:url('admin/index/index')}"><i class="fa fa-home"></i> 主页</a></li>
@@ -162,8 +160,6 @@
     </div>
 </body>
 <script>
-    /*删除地址*/
-//     var data_del_url = 'del.html';
     /*定义批量删除id*/
      var del_ids = [];
 </script>
