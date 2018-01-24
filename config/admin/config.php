@@ -115,4 +115,12 @@ return [
         'upload_url' => DS . 'uploads' . DS . 'admin' . DS . 'avatar' . DS,
     ],
 
+    // 文件上传
+    //后台文件上传路径设置
+    'file_upload_path'           => ROOT_PATH . 'public' . DS . 'uploads' . DS . 'admin' . DS . 'admin_file' . DS,
+    //上次传文件url显示路径
+    'file_upload_url'            => DS . 'uploads' . DS . 'admin' . DS . 'admin_file' . DS,
+    'file_upload_max_size'       => 204800,
+    'file_upload_ext'            => 'jpg,png,gif,doc,docx,xlsx',
+
 ];

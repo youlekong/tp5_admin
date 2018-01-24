@@ -29,7 +29,7 @@ class Backend extends Controller
             'sys' => $this->getSysInfo(),
             'user' => $this->getUserInfo(),
             'site' => $this->getSite()
-        ]);local_log($this->getSite());
+        ]);
         return parent::fetch($template, $vars, $replace, $config);
     }
 
