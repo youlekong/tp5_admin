@@ -1,0 +1,57 @@
+<div id="comments" class="responsesWrapper">
+    <h4 class="responses-title">评论 : <span class="commentCount">{$comments_count}</span></h4>
+    <ol class="commentlist">
+        {foreach name='comments' item='comment' key='k'}
+        <li class="comment">
+            <div id="{$comment.id}" class="comment-block">
+                <div class="comment-info u-clearfix">
+                    <!--<div class="comment-avatar">-->
+                        <!--<img height="40" width="40" class="avatar" src="">-->
+                    <!--</div>-->
+                    <div class="comment-meta">
+                        <div class="comment-author" >
+                            <a href="" rel="external nofollow" class="url">{$comment.author}</a>
+                            <span class="comment-reply-link u-cursorPointer comment-response">回复</span>
+                        </div>
+                        <div class="comment-time" datetime="{$comment.create_time}">{$comment.create_time}</div>
+                    </div>
+                </div>
+                <div class="comment-content">
+                    <p>{$comment.content}</p>
+                </div>
+            </div>
+            {include file='template/form' display='display:none;' type='parent-form' /}
+            <ol class="children">
+                {foreach name='comment.children' item='subComment'}
+                <li class="comment child-node">
+                    <div id="{$subComment.id}" class="comment-block">
+                        <div class="comment-info u-clearfix">
+                            <!--<div class="comment-avatar">-->
+                                <!--<img height="40" width="40" class="avatar" src="">-->
+                            <!--</div>-->
+                            <div class="comment-meta">
+                                <div class="comment-author">
+                                    <a href="" rel="external nofollow" class="url">{$subComment.author}</a>
+                                    <span class="comment-reply-link u-cursorPointer comment-response">回复</span>
+                                </div>
+                                <div class="comment-time" datetime="{$subComment.create_time}">{$subComment.create_time}</div>
+                            </div>
+                        </div>
+                        <div class="comment-content">
+                            <p>
+                                <a href="" rel="nofollow" class="cute atreply">@{$subComment.parent_id|to_response}</a>
+                                {$subComment.content}
+                            </p>
+                        </div>
+                    </div>
+                    {include file='template/subForm' display='display:none;' type='child-form' /}
+                </li><!-- #comment-## -->
+                {/foreach}
+            </ol><!-- .children -->
+        </li><!-- #comment-## -->
+        {/foreach}
+    </ol>
+    <!--<nav class="commentnav u-textAlignCenter">-->
+        <!--<span class="cnav-item" data-paged="2">分页</span>-->
+    <!--</nav>-->
+</div>

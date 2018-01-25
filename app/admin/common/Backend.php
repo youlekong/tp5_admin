@@ -9,10 +9,28 @@ use tools\Tree;
 use think\Db;
 use app\admin\model\AdminUsers;
 use app\admin\model\AdminMenus;
+use think\Request;
 
 class Backend extends Controller
 {
-    protected $refererUrl;
+//    protected $refererUrl;
+
+    protected $param;
+    protected $id;
+    protected $uid;
+
+
+    public function __construct()
+    {
+        $this->request     = Request::instance();
+
+        $this->param      = $this->request->param();
+        $this->id = isset($this->param['id']) ? $this->param['id'] : -1;
+
+        $this->uid = Session::get('user.id');
+
+        parent::__construct();
+    }
 
     public function _initialize()
     {

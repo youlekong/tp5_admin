@@ -1,0 +1,39 @@
+<!--widget-->
+<aside class="col-md-4 sidebar">
+    <!-- start tag cloud widget -->
+    {if count($recommends) > 0}
+    <div class="widget">
+        <h4 class="title">推荐文章</h4>
+        <div class="content community">
+            {foreach name='recommends' item='recommend'}
+                <p><a href="/blog/index/post?id={$recommend.id}">{$recommend.title}</a></p>
+            {/foreach}
+        </div>
+    </div>
+    {/if}
+    <!-- end tag cloud widget -->
+
+    <!-- start widget -->
+    <div class="widget">
+        <h4 class="title">最新文章</h4>
+        <div class="content community">
+            {foreach name='freshes' item='fresh'}
+                <p><a href="/blog/index/post?id={$fresh.id}">{$fresh.title}</a></p>
+            {/foreach}
+        </div>
+    </div>
+    <!-- end widget -->
+
+    <!-- start tag cloud widget -->
+    <div class="widget">
+        <h4 class="title">标签云</h4>
+        <div class="content tag-cloud">
+            {foreach name='tags' item='tag'}
+                <a href="/blog/index/posts?tid={$tag.id}">{$tag.name}</a>
+            {/foreach}
+
+            <a href="/blog/tag/index">...</a>
+        </div>
+    </div>
+    <!-- end tag cloud widget -->
+</aside>

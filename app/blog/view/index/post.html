@@ -1,0 +1,59 @@
+
+    <main class="col-md-8 main-content">
+
+        <article id="{$article.id}" class="post">
+            <header class="post-head">
+                <h1 class="post-title">{$article.title}</h1>
+                <section class="post-meta">
+                    <span class="author">作者：<a href="/author/wangsai/">{$article.author}</a></span> &bull;
+                    <time class="post-date" datetime="{$article.update_time}" title="{$article.update_time}">{$article.update_time}</time>
+                </section>
+            </header>
+
+            {if isset($article.img) }
+            <section class="featured-media">
+                <img src="{$article.img}" alt="{$article.title}">
+            </section>
+            {/if}
+
+            <section class="post-content">
+                {$article.content}
+            </section>
+
+            <footer class="post-footer clearfix">
+                <div class="pull-left tag-list">
+                    <i class="fa fa-folder-open-o"></i>
+                    <a href="/blog/index/posts?id={$article.cate.id}">{$article.cate.name}</a>
+                </div>
+
+                <!--<div class="pull-right share">-->
+                    <!--<div class="bdsharebuttonbox share-icons">-->
+                        <!--<a href="#" class="bds_more" data-cmd="more"></a>-->
+                        <!--<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>-->
+                        <!--<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>-->
+                        <!--<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>-->
+                        <!--<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>-->
+                        <!--<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </footer>
+
+        </article>
+
+        <div class="prev-next-wrap clearfix">
+            {if isset($prev)}
+            <a class="btn btn-default" href="/blog/index/post?id={$prev.id}"><i class="fa fa-angle-left fa-fw"></i>{$prev.title}</a>
+            &nbsp;
+            {/if}
+            {if isset($next)}
+            <a class="btn btn-default" href="/blog/index/post?id={$next.id}">{$next.title}<i class="fa fa-angle-right fa-fw"></i></a>
+            {/if}
+        </div>
+
+        <div class="about-comment clearfix">
+            {include file='template/form' display='display:block;' /}
+        </div>
+
+        {include file='template/comment' /}
+
+    </main>

@@ -1,0 +1,28 @@
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            {include file="template/form_header" /}
+            <form id="dataForm" class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                <div class="box-body">
+                    <div class="fields-group">
+                        {if isset($info)}
+                            <input id="id" name="id" value="{$info.id}" hidden placeholder="请勿修改">
+                        {/if}
+
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">分类名称</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                    <input maxlength="20" id="name" name="name" value="{$info.name|default=''}" class="form-control" placeholder="请输入分类名称">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {include file="template/form_footer" /}
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="respond [type]" role="form" style="[display]">
+    <h3 class="comments-title">发表留言</h3>
+    <form action="/blog/comment/add" method="post" class="responsesForm">
+        <div class="info">
+            <p class="comment-form-author comment-form-input">
+                <label for="author">昵称</label>
+                <input id='author' type="text" class="inputGroup" aria-required="true" size="30" name="author">
+            </p>
+            <p class="comment-form-email comment-form-input">
+                <label for="email">邮箱</label>
+                <input id="email" class="inputGroup" type="text" aria-required="true" size="30" name="email">
+            </p>
+        </div>
+        <p class="comment-form-comment comment-form-input">
+            <label for="content">评论</label>
+            <textarea id="content" class="inputGroup inputTextarea" placeholder="输入评论" rows="8" cols="45" name="content"></textarea>
+        </p>
+        <input class="inputSubmit" type="submit" value="提交评论">
+        <input type="hidden" name="a_id" value="{$article.id}">
+        {if isset($comment) }
+        {if isset($subComment) }
+        <input type="hidden" name="parent_id" value="{$subComment.id}">
+        <input type="hidden" name="parent_str" value="{$comment.parent_id},{$comment.id},{$subComment.id}">
+        {/if}
+        {else /}
+        <input type="hidden" name="parent_id" value="0">
+        <input type="hidden" name="parent_str" value="0">
+        {/if}
+    </form>
+</div>

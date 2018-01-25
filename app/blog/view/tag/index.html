@@ -1,0 +1,84 @@
+{__NOLAYOUT__}
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="origin" />
+    <meta name="description" content="javascript | HTML5 | CSS3 | PHP | React | Vue" />
+    <meta name="keywords" content="javascript, HTML5, CSS3, PHP, React, Vue">
+    <title>博客平台</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/8.5/styles/monokai_sublime.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/magnific-popup.js/1.0.0/magnific-popup.min.css">
+    {css href="__CSS__/main.css" /}
+    <style>
+        .tag-wrapper {
+        }
+        .header {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0,0,0,.1);
+        }
+        .header span {
+            font-size: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #0d0d0d;
+        }
+        .tag-wrapper .category {
+            text-align: center;
+        }
+        .tag-wrapper .category > div {
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+        .tag-wrapper .category > div > div {
+            height:40px;
+            line-height:40px;
+            border: 1px solid rgba(0,0,0,.1);
+        }
+    </style>
+</head>
+<body>
+<div class="home-template">
+    {include file="template/header" /}
+
+    <div class="container tag-wrapper">
+        <header class="header">
+            <span>所有标签</span>
+        </header>
+        <div class="row">
+            <div class="col-sm-8 category">
+                {foreach name='tags' item='tag'}
+                <div class="col-xs-6 col-md-3 ">
+                    <div class="col-md-12"><a href="/blog/index/posts?tid={$tag.id}">{$tag.name}</a></div>
+                </div>
+                {/foreach}
+            </div>
+        </div>
+    </div>
+
+    {include file='template/footer' /}
+
+    <a href="#" id="back-to-top"><i class="fa fa-angle-up"></i></a>
+</div>
+
+<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/fitvids/1.1.0/jquery.fitvids.min.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/8.5/highlight.min.js"></script>
+<script src="https://cdn.bootcss.com/magnific-popup.js/1.0.0/jquery.magnific-popup.min.js"></script>
+{js href="__JS__/main.js"}
+<script>
+    //        var _hmt = _hmt || [];
+    //        (function() {
+    //            var hm = document.createElement("script");
+    //            hm.src = "https://hm.baidu.com/hm.js?6338835ad35c6d950a554fdedb598e48";
+    //            var s = document.getElementsByTagName("script")[0];
+    //            s.parentNode.insertBefore(hm, s);
+    //        })();
+</script>
+</body>
+</html>

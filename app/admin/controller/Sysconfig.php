@@ -11,7 +11,7 @@ class Sysconfig extends Backend
     {
         $sysconfigs = new Sysconfigs();
         $configs = $sysconfigs->paginate();
-        
+
         $this->assign([
             'lists' => $configs,
             'total' => $configs->total(),

@@ -116,3 +116,29 @@ if (!function_exists('format_size')) {
         return round($size, 2) . $delimiter . $units[$i];
     }
 }
+
+if (!function_exists('brief_substr')) {
+    function brief_substr($str) {
+        if (mb_strlen($str) > 20)
+            return mb_substr($str, 0, 20) . '...';
+
+        return $str;
+    }
+}
+
+if (!function_exists('blog_pagination')) {
+    function blog_pagination($total) {
+        if ($total < 10) {
+            return 1;
+        } else {
+            return intval($total/10);
+        }
+    }
+}
+
+if (!function_exists('to_response')) {
+    function to_response($id) {
+        $rs = \app\admin\model\BlogComments::get(['id' => $id]);
+        return $rs->author;
+    }
+}
