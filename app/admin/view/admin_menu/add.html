@@ -95,3 +95,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    /*初始化switch组件*/
+    $(function () {
+        $('[class="switch-is-show"]').bootstrapSwitch({
+            onText: "是",
+            offText: "否",
+            onColor: "success",
+            offColor: "danger",
+
+            onSwitchChange: function (event, state) {
+                $('.input_status').val(state ? '1' : '0').change();
+            }
+        });
+    });
+</script>
