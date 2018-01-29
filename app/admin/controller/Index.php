@@ -10,7 +10,7 @@ use app\admin\model\AdminMenus;
 
 class Index extends Backend {
 
-    public function index() {
+    public function dashboard() {
         $admin_users = new AdminUsers();
         $admin_user_count = $admin_users->count();
 
@@ -30,11 +30,11 @@ class Index extends Backend {
             'admin_menu_count' => $admin_menu_count
         ]);
 
-        return $this->fetch('index');
+        return $this->fetch();
 
     }
 
-    public function dashboard() {
+    public function index() {
         return $this->fetch('template/layout');
     }
 }

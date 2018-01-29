@@ -66,6 +66,18 @@ if (!function_exists('hash_edit')) {
     }
 }
 
+if (!function_exists('hash_index')) {
+    function hash_index() {
+        $url = request()->pathinfo();
+        $arr = explode('/', $url);
+        if (end($arr) !== 'index') {
+            $arr[count($arr) - 1] = 'index';
+            $url = implode('/', $arr);
+        }
+        return '#sub=' . $url;
+    }
+}
+
 if (!function_exists('hash_add')) {
     function hash_add() {
         $url = request()->pathinfo();
