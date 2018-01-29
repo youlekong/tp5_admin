@@ -2,7 +2,7 @@
 <div class="row">
     <div class="pad margin no-print">
         <div class="callout callout-info" style="margin-bottom: 0!important;">
-            <h4><i class="fa fa-info"></i> 你好,admin:</h4>
+            <h4><i class="fa fa-info"></i> 你好，admin：</h4>
             欢迎来到后台管理系统，左侧为菜单区域，右侧为功能区。
         </div>
     </div>
@@ -80,10 +80,10 @@
                 <table class="table table-hover table-bordered">
                     <tbody>
                     <tr>
-                        <td>您的系统</td>
-                        <td>ip地址</td>
-                        <td>浏览器</td>
-                        <td>城市</td>
+                        <td>{:__('system')}</td>
+                        <td>{:__('ip_addr')}</td>
+                        <td>{:__('browser')}</td>
+                        <td>{:__('city')}</td>
                     </tr>
                     <tr>
                         <td>{$sys.os}</td>
@@ -102,28 +102,28 @@
 
 <div class="col">
     <div class="box box-info">
-        <div class="box-header"><h3 class="box-title">{:__('Server info')}</h3></div>
+        <div class="box-header"><h3 class="box-title">{:__('server_info')}</h3></div>
         <div class="box-body">
             <table class="table table-striped">
                 <tbody>
                 <tr>
-                    <td width="120px">{:__('PHP版本')}</td>
+                    <td width="120px">{:__('php_version')}</td>
                     <td>{$Think.const.PHP_VERSION}</td>
                 </tr>
                 <tr>
-                    <td width="120px">{:__('运行环境')}</td>
+                    <td width="120px">{:__('env')}</td>
                     <td>{:php_sapi_name()}</td>
                 </tr>
                 <tr>
-                    <td width="120px">{:__('开启调试')}</td>
+                    <td width="120px">{:__('is_debug')}</td>
                     <td>{$Think.config.app_debug?__('Yes'):__('No')}</td>
                 </tr>
                 <tr>
-                    <td width="120px">{:__('服务器')}</td>
+                    <td width="120px">{:__('server')}</td>
                     <td>{$Think.server.SERVER_SOFTWARE}</td>
                 </tr>
                 <tr>
-                    <td width="120px">{:__('时区')}</td>
+                    <td width="120px">{:__('timezone')}</td>
                     <td>{:date_default_timezone_get()}</td>
                 </tr>
                 </tbody></table>
