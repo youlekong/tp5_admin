@@ -15,7 +15,9 @@ class AdminUser extends Backend
         $param = $this->request->param();
 
         // filter
-        if ( $this->request->has('keywords') && isset($param['keywords']) ) {
+        if ( $this->request->has('keywords')
+            && isset($param['keywords'])
+            && $this->request->isGet()) {
             $model->whereLike('name|nick_name|email|mobile', "%" . $param['keywords'] . "%");
             $this->assign('keywords', $param['keywords']);
         }
@@ -59,7 +61,7 @@ class AdminUser extends Backend
 
                 $adminUser->adminGroup()->saveAll($group);
 
-                return $this->ajaxSuccess('添加成功', ['url' => 'index']);
+                return $this->ajaxSuccess('添加成功', ['url' => '/admin/admin_user/index']);
             }
 
             return $this->ajaxError('添加失败');
@@ -113,7 +115,7 @@ class AdminUser extends Backend
                 }
                 $adminUser->adminGroup()->saveAll($group);
 
-                return $this->ajaxSuccess('修改成功', ['url' => 'index']);
+                return $this->ajaxSuccess('修改成功', ['url' => '/admin/admin_user/index']);
             }
 
             return $this->ajaxError('修改失败');
@@ -136,23 +138,24 @@ class AdminUser extends Backend
     }
 
     public function del() {
-        $id = $this->request->param('id');
+        if ($this->request->isGet()) {
+            $id = $this->request->param('id');
+            $result = AdminUsers::destroy(function ($query) use ($id) {
+                $query->whereIn('id', $id);
+            });
 
-        $result = AdminUsers::destroy(function ($query) use ($id) {
-            $query->whereIn('id', $id);
-        });
-
-        if ($result) {
-            //删除用户与角色关联记录
-            $adminGroupAccess = new AdminGroupAccess();
-            $result = $adminGroupAccess->whereIn('uid', $id)->delete();
-            if (!$result) {
-                return $this->error('角色关联数据删除失败！');
+            if ($result) {
+                //删除用户与角色关联记录
+                $adminGroupAccess = new AdminGroupAccess();
+                $result = $adminGroupAccess->whereIn('uid', $id)->delete();
+                if (!$result) {
+                    return $this->error('角色关联数据删除失败！');
+                }
+                return $this->success('删除成功', ['url' => '/admin/admin_user/index']);
             }
-            return $this->success();
         }
 
-        return $this->error('删除失败');
+        return $this->ajaxError('删除失败', ['url' => '/admin/admin_user/index']);
     }
 
     public function profile() {

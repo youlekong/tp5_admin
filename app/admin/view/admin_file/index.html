@@ -4,13 +4,13 @@
     <div class="col-md-12">
         <div class="box">
             <div class="box-body">
-                <form class="form-inline" name="searchForm" id="searchForm" action="" method="GET">
+                <form class="form-inline" name="searchForm" onsubmit="return false;" id="searchForm" action="" method="GET">
                     <div class="form-group">
                         <input value="{$keywords ? $keywords : '' ;}"
                                name="keywords" id="keywords" class="form-control input-sm" placeholder="输入关键词查询">
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-search"></i> 查询
+                        <button class="btn btn-sm btn-primary" onclick="filter_form()" type="submit"><i class="fa fa-search"></i> 查询
                         </button>
                     </div>
                     <div class="form-group">

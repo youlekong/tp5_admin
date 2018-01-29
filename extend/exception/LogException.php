@@ -46,15 +46,15 @@ class LogException extends Handle
             $syslog->syslogTrace()->save($trace_data);
         }
 
-        $e_content = sprintf('%s:%s', $e_file, $e_line);
-        $e_title = nl2br(htmlentities($e_message));
-        $data = $e_title ." in ". $e_content;
-        $logger = new Logger('errorlog');
-        $stream_handler = new StreamHandler(config('sys_log.path'), Logger::INFO);
-        $stream_handler->setFormatter(new JsonFormatter());
-        $logger->pushHandler($stream_handler);
-        $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::INFO));
-        $logger->error($data);
+//        $e_content = sprintf('%s:%s', $e_file, $e_line);
+//        $e_title = nl2br(htmlentities($e_message));
+//        $data = $e_title ." in ". $e_content;
+//        $logger = new Logger('errorlog');
+//        $stream_handler = new StreamHandler(config('sys_log.path'), Logger::INFO);
+//        $stream_handler->setFormatter(new JsonFormatter());
+//        $logger->pushHandler($stream_handler);
+//        $logger->pushHandler(new ErrorLogHandler(ErrorLogHandler::OPERATING_SYSTEM, Logger::INFO));
+//        $logger->error($data);
 
         //TODO::开发者对异常的操作
         //可以在此交由系统处理
