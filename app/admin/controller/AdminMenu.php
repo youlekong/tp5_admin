@@ -76,20 +76,21 @@ class AdminMenu extends Backend
     public function add() {
         $param = $this->request->param();
 
-        if ($this->request->isPost()) {local_log($param);
+        if ($this->request->isPost()) {
 
             $result = $this->validate($param, 'AdminMenu.add');
             if (true !== $result) {
-                return $this->error($result);
+                return $this->ajaxError($result);
             }
 
             $param['url'] = parse_name($param['url']);
 
-            $menu = AdminMenus::create($param);
+            $menu = new AdminMenus($param);
+            $menu->allowField(true)->save();
             if ($menu) {
-                return $this->success('菜单添加成功', ['url' => 'index']);
+                return $this->ajaxSuccess('菜单添加成功', ['url' => '/admin/admin_menu/index']);
             }
-            return $this->error('菜单添加失败');
+            return $this->ajaxError('菜单添加失败');
         }
 
         $parent_id = isset($param['parent_id']) ? $param['parent_id'] : 0;
@@ -118,15 +119,15 @@ class AdminMenu extends Backend
 
             $result = $this->validate($param, 'AdminMenu.add');
             if (true !== $result) {
-                return $this->error($result);
+                return $this->ajaxError($result);
             }
 
             $param['url'] = parse_name($param['url']);
 
-            if (false !== $info->save($param)) {
-                return $this->success('菜单修改成功', ['url' => 'index']);
+            if (false !== $info->allowField(true)->save($param)) {
+                return $this->ajaxSuccess('菜单修改成功', ['url' => '/admin/admin_menu/index']);
             }
-            return $this->error('菜单修改失败');
+            return $this->ajaxError('菜单修改失败');
         }
 
         $requests = Db::name('request_type')->order('id asc')->select();

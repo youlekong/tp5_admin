@@ -160,3 +160,17 @@ if (!function_exists('to_response')) {
         return $rs->author;
     }
 }
+
+if (!function_exists('sys_conf')) {
+    function sys_conf($name, $value = null) {
+        static $config = [];
+        if ($value !== null) {
+            list($config, $data) = [[], ['name' => $name, 'value' => $value]];
+            return think\Db::name('admin_config')->update($data);
+        }
+        if (empty($config)) {
+            $config = think\Db::name('admin_config')->column('name,value');
+        }
+        return isset($config[$name]) ? $config[$name] : '';
+    }
+}
