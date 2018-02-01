@@ -1,6 +1,5 @@
 <link rel="stylesheet" href="__PLUGINS__/laydate/need/laydate.css">
 <link rel="stylesheet" href="__PLUGINS__/laydate/skins/default/laydate.css">
-<script src="__STATIC__/plugins/laydate/laydate.js"></script>
 <input type="hidden" value="{$site.title}" name="title">
 <div class="row">
     <div class="col-md-12">
@@ -86,8 +85,9 @@
         </div>
     </div>
 </div>
-<script>
 
+<script src="__STATIC__/plugins/laydate/laydate.js"></script>
+<script>
     var start = {
         elem: '#start_date',
         max: laydate.now(),
@@ -106,5 +106,4 @@
     };
     laydate(start);
     laydate(end);
-
 </script>
