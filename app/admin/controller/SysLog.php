@@ -8,6 +8,7 @@ use app\admin\model\Syslogs;
 class SysLog extends Backend
 {
     public function index() {
+
         $sysLogs = new Syslogs();
         $param = $this->request->param();
         if (isset($param['keywords']) && !empty($param['keywords'])) {
@@ -15,6 +16,7 @@ class SysLog extends Backend
             $sysLogs->whereLike('message', $keywords);
             $this->assign('keywords', $param['keywords']);
         }
+
         $lists = $sysLogs
             ->with('syslogTrace')
             ->order('id desc')

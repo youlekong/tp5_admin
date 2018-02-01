@@ -38,6 +38,14 @@ class Backend extends Controller
         if (!$auth->is_login()) {
             $this->redirect('/admin/auth/signIn');
         }
+
+        $this->initDynamicConfig();
+    }
+
+    private function initDynamicConfig() {
+        // 动态配置分页
+        $pathInfo = $this->request->pathinfo();
+        config('paginate.path', "#sub={$pathInfo}");
     }
 
     protected function fetch($template = '', $vars = [], $replace = [], $config = [])

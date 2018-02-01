@@ -66,6 +66,12 @@ if (!function_exists('hash_edit')) {
     }
 }
 
+if (!function_exists('hash_access')) {
+    function hash_access($id, $module) {
+        return '#sub=' . $module . 'access?id=' . $id;
+    }
+}
+
 if (!function_exists('hash_index')) {
     function hash_index() {
         $url = request()->pathinfo();

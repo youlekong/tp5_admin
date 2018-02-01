@@ -33,7 +33,7 @@ class AdminMenu extends Backend
             $result[$n]['parent_id_node'] = ($r['parent_id']) ? ' class="child-of-node-' . $r['parent_id'] . '"' : '';
 
             $result[$n]['str_manage'] =
-                '<a href="' . '{:hash_edit($r[\'id\'], \'admin/admin_menu/\')}' . 'id=' . $r['id'] .
+                '<a href="' . hash_edit($r['id'], 'admin/admin_menu/') .
                 '" class="btn btn-primary btn-xs" title="编辑"><i class="fa fa-pencil"></i></a>
                 ';
 
@@ -109,10 +109,11 @@ class AdminMenu extends Backend
         $info = AdminMenus::get($id);
         $param = $this->request->param();
 
-        //不允许修改的菜单，首页和个人资料页，还是多加点吧
-        if (in_array($id, $this->protected_menu) && $uid != 1) {
+        //不允许修改的菜单
+        if ($uid != 1) {
             return $this->error('此菜单不允许修改');
         }
+
         if ($this->request->isPost()) {
 
             $result = $this->validate($param, 'AdminMenu.add');

@@ -122,4 +122,12 @@ return [
     'file_upload_max_size'       => 204800,
     'file_upload_ext'            => 'jpg,png,gif,doc,docx,xlsx',
 
+    // 微信配置
+    'wx_config' => [
+        'wx_app_id' => 'wx04ca90f9cb9724c7',
+        'wx_app_secret' => '9f3d8e89e3e39519c952d7cd7baf7423',
+        'wx_token' => 'tpAdmin',
+        'wx_url' => '',
+        'wx_redirect_uri' => ''
+    ]
 ];
