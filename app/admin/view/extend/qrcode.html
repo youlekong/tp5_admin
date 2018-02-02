@@ -1,0 +1,84 @@
+<script src="__STATIC__/plugins/layer/layer.js"></script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            {include file="template/form_header" /}
+            <form id="dataForm" class="form-horizontal" method="post" onsubmit="return false;" enctype="multipart/form-data">
+                <div class="box-body">
+                    <div class="fields-group">
+                        <div class="form-group">
+                            <label for="content" class="col-sm-2 control-label">内容</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                                    <input  name="content" id="content" maxlength="210" class="form-control" placeholder="请输入文字或网址">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="btn-group pull-right">
+                            <button type="submit" onclick="create_qrcode()" class="btn flat btn-info pull-right dataform-sub">
+                                {$sub_title|default='保存'}
+                            </button>
+                        </div>
+                        <div class="btn-group pull-left">
+                            <button type="reset" class="btn flat btn-warning">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">生成结果</h3>
+            </div>
+            <div class="box-body">
+                <div style="text-align: center">
+                    <img  src="" id="result">
+                </div>
+            </div>
+        </div>
+        <!-- /.box -->
+    </div>
+</div>
+
+<script>
+    function create_qrcode() {
+        var content = $("#content").val();
+        $.ajax({
+            url: handleUrl(),
+            type: "post",
+            data: {content:content},
+            dataType: 'json',
+            cache: false,
+            async:false,
+            success: function (result) {
+                if(result.code==1){
+                    $("#result").attr('src',result.data.qrcode+"?");
+                }else {
+                    toastr.error(result.msg);
+                }
+            },
+            error: function () {
+                toastr.error("系统异常，请稍后重试");
+            }
+        });
+
+        function handleUrl() {
+            var path = location.hash.length > 0 ? location.hash.substr(5) : '';
+            if (path.length > 0) {
+                var arr = path.split('/');
+                var newArr = arr.filter(function (v) {
+                    return v !== ''
+                });
+                path = '/' + newArr.join('/')
+            }
+            return path;
+        }
+    }
+</script>

@@ -1,0 +1,136 @@
+<link rel="stylesheet" href="__STATIC__/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            {include file="template/form_header" /}
+
+            <form id="dataForm" class="form-horizontal" onsubmit="return false;" action="" method="post" enctype="multipart/form-data">
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="fields-group">
+
+                        <div class="form-group">
+                            <label for="address" class="col-sm-2 control-label">收信人</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                    <input maxlength="300" id="address" name="address"
+                                           value="{$info.address|default='424188487@qq.com'}" class="form-control"
+                                           placeholder="多个地址请用英文逗号隔开">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject" class="col-sm-2 control-label">收信人</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+                                    <input maxlength="300" id="subject" name="subject"
+                                           value="{$info.subject|default='test'}" class="form-control"
+                                           placeholder="主题">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject" class="col-sm-2 control-label">邮件正文</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <textarea id="content" name="content" class="form-control" style="height: 300px" placeholder="邮件正文">test content!</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject" class="col-sm-2 control-label">附件</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <div class="btn btn-default btn-file">
+                                        <i class="fa fa-paperclip"></i>点击上传
+                                        <input type="file" id="attachment" name="attachment"
+                                               accept="image/jpeg,image/png,image/gif,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                                    </div>
+                                    <small class="help-block">最大不超过2MB</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="btn-group pull-right">
+                            <button type="submit" onclick="create_email()" class="btn flat btn-info pull-right dataform-sub">
+                                {$sub_title|default='保存'}
+                            </button>
+                        </div>
+                        <div class="btn-group pull-left">
+                            <button type="reset" class="btn flat btn-warning">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- /. box -->
+    </div>
+    <!-- /.col -->
+</div>
+
+<script src="__STATIC__/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<script src="__STATIC__/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.zh-CN.js"></script>
+<!-- Page Script -->
+<script>
+    $(function () {
+        //Add text editor
+        $("#content").wysihtml5({locale: "zh-CN"});
+    });
+    function create_email() {
+        var formArr = $('#dataForm').serializeArray();
+
+        var formData = new FormData();
+        formArr.forEach(function (v) {
+            formData.append(v['name'], v['value']);
+        });
+
+        if (document.getElementById('attachment')) {
+            var file = document.getElementById('attachment').files[0];
+            formData.append('attachment', file);
+        }
+
+        $.ajax({
+            type: "POST",
+            url: handleUrl(),
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (res) {
+                if (res.code === 1) {
+                    toastr.success(res.msg);
+                } else if (res.code === 0) {
+                    toastr.error(res.msg);
+                } else {
+                    toastr.error('服务器错误');
+                }
+            },
+            error: function (err) {
+                toastr.error(JSON.stringify(err));
+            }
+        });
+
+        function handleUrl() {
+            var path = location.hash.length > 0 ? location.hash.substr(5) : '';
+            if (path.length > 0) {
+                var arr = path.split('/');
+                var newArr = arr.filter(function (v) {
+                    return v !== ''
+                });
+                path = '/' + newArr.join('/')
+            }
+            return path;
+
+        }
+    }
+</script>

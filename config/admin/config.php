@@ -129,5 +129,27 @@ return [
         'wx_token' => 'tpAdmin',
         'wx_url' => '',
         'wx_redirect_uri' => ''
+    ],
+
+    // 生成二维码配置
+    'qr_code' => [
+        'path' => ROOT_PATH . 'public' . DS . 'uploads' . DS . 'admin' . DS . 'qrcode' . DS,
+        'url'  => DS . 'uploads' . DS . 'admin' . DS . 'qrcode' . DS
+    ],
+
+    // 邮件配置
+    'email' => [
+        //后台邮件相关参数设置
+        'email_from_name'            => 'koyole', // 发件人
+        'email_smtp'                 => 'smtp.163.com', // SMTP服务器
+        'email_username'             => 'koyole@163.com', // 账号
+        'email_password'             => 'wy126830', // 密码
+
+        //后台文件上传路径设置
+        'file_upload_path'     => ROOT_PATH . 'public' . DS . 'uploads' . DS . 'admin' . DS . 'email_file' . DS,
+        //上次传文件url显示路径
+        'file_upload_url'      => DS . 'uploads' . DS . 'admin' . DS . 'email_file' . DS,
+        'file_upload_max_size' => 204800,//3145728,
+        'file_upload_ext'      => 'jpg,png,gif,doc,docx,xlsx',
     ]
 ];

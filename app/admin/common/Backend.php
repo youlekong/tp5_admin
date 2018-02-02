@@ -147,12 +147,12 @@ class Backend extends Controller
 
     // ajax成功
     public function ajaxSuccess($msg, $data = null) {
-        $this->result($data, 1, $msg);
+        return $this->result($data, 1, $msg);
     }
 
     // ajax失败
     public function ajaxError($msg, $data = null) {
-        $this->result($data, 0, $msg);
+        return $this->result($data, 0, $msg);
     }
 
     protected function success($msg = '操作成功', $url = null, $data = '', $wait = 3, array $header = [])
