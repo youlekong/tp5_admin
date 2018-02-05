@@ -151,7 +151,7 @@ class Backend extends Controller
     }
 
     // ajax失败
-    public function ajaxError($msg, $data = null) {
+    public function ajaxError($msg = '操作无效', $data = null) {
         return $this->result($data, 0, $msg);
     }
 
