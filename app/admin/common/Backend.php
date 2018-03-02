@@ -3,54 +3,57 @@
 namespace app\admin\common;
 
 use think\Controller;
-use controller\AdminAuth;
 use think\Session;
-use tools\Tree;
 use think\Db;
+use think\Request;
+use controller\AdminAuth;
+
+use tools\Tree;
 use app\admin\model\AdminUsers;
 use app\admin\model\AdminMenus;
-use think\Request;
 
 class Backend extends Controller
 {
-//    protected $refererUrl;
-
     protected $param;
     protected $id;
     protected $uid;
     protected $sub_url;
-
+    protected $refererUrl;
 
     public function __construct()
     {
+        // param
         $this->request     = Request::instance();
-
         $this->param      = $this->request->param();
+
+        // id
         $this->id = isset($this->param['id']) ? $this->param['id'] : -1;
 
+        // uid
         $this->uid = Session::get('user.id');
 
+        // sub url
         $this->sub_url = $this->request->pathinfo();
+
+        // 上一个页面链接
+        $this->refererUrl = $this->request->server('HTTP_REFERER');
 
         parent::__construct();
     }
 
     public function _initialize()
     {
+        // 是否登录
         $auth = new AdminAuth();
         if (!$auth->is_login()) {
             $this->redirect('/admin/auth/signIn');
         }
 
-        $this->initDynamicConfig();
+        // 设置config
+        $this->_initDynamicConfig();
     }
 
-    private function initDynamicConfig() {
-        // 动态配置分页
-        $pathInfo = $this->request->pathinfo();
-        config('paginate.path', "#sub={$pathInfo}");
-    }
-
+    // 重写fetch方法
     protected function fetch($template = '', $vars = [], $replace = [], $config = [])
     {
         parent::assign([
@@ -96,31 +99,10 @@ class Backend extends Controller
         $menu = $auth->getMenuList(Session::get('user.id'), 1);
 
         $max_level  = 0;
-        $current_id = 1;
+        $current_id = null;
         $parent_ids = array(0 => 0);
 
-//        $current_nav = ['', ''];
-        foreach ($menu as $k => $v) {
-            if ($v['url'] == $this->sub_url) {
-                $parent_ids  = $this->getMenuParent($menu, $v['id']);
-                $current_id  = $v['id'];
-//                $current_nav = $this->getCurrentNav($menu, $v['id']);
-            }
-        }
-        if ($parent_ids == false) {
-            $parent_ids = array(0 => 0);
-        }
-//        $menu = Db::name('admin_menus')
-//            ->where(['is_show' => ['=', '1']])
-//            ->order('sort_id asc,id asc')
-//            ->field('id,title,url,icon,is_show,parent_id')
-//            ->column('*', 'id');
-
         $tree = new Tree();
-//        $max_level  = 0;
-//        $current_id = 1;
-//        $parent_ids = array(0 => 0);
-
         foreach ($menu as $k => $v) {
             $url               = '#sub=' . $v['url'];//url($v['url']);
             $menu[$k]['icon']  = !empty($v['icon']) ? $v['icon'] : 'fa fa-list';
@@ -128,7 +110,6 @@ class Backend extends Controller
             $max_level         = $max_level <= $menu[$k]['level'] ? $menu[$k]['level'] : $max_level;
             $menu[$k]['url']   = $url;
         }
-
         $tree->init($menu);
 
         $text_base_one   = "<li class='treeview";
@@ -166,52 +147,17 @@ class Backend extends Controller
         return $tree->get_authTree(0, $current_id, $parent_ids);
     }
 
-    protected function getMenuParent($arr, $myid, $parent_ids = array())
-    {
-        $a = $newarr = array();
-        if (is_array($arr)) {
-            foreach ($arr as $id => $a) {
-                if ($a['id'] == $myid) {
-                    if ($a['parent_id'] != 0) {
-                        array_push($parent_ids, $a['parent_id']);
-                        $parent_ids = $this->getMenuParent($arr, $a['parent_id'], $parent_ids);
-                    }
-                }
-            }
-        }
-        return !empty($parent_ids) ? $parent_ids : false;
-    }
-
-//    protected function getCurrentNav($arr, $myid, $parent_ids = array(), $current_nav = '')
-//    {
-//        $a = $newarr = array();
-//        if (is_array($arr)) {
-//            foreach ($arr as $id => $a) {
-//                if ($a['id'] == $myid) {
-//                    if ($a['parent_id'] != 0) {
-//                        array_push($parent_ids, $a['parent_id']);
-//                        $ru          = '<li><a><i class="fa ' . $a['icon'] . '"></i> ' . $a['title'] . '</a></li>';
-//                        $current_nav = $ru . $current_nav;
-//                        $temp_result = $this->getCurrentNav($arr, $a['parent_id'], $parent_ids, $current_nav);
-//                        $parent_ids  = $temp_result[0];
-//                        $current_nav = $temp_result[1];
-//                    }
-//                }
-//            }
-//        }
-//        return !empty([$parent_ids, $current_nav]) ? [$parent_ids, $current_nav] : false;
-//    }
-
     // ajax成功
-    public function ajaxSuccess($msg, $data = null) {
+    protected function ajaxSuccess($msg, $data = null) {
         return $this->result($data, 1, $msg);
     }
 
     // ajax失败
-    public function ajaxError($msg = '操作无效', $data = null) {
+    protected function ajaxError($msg = '操作无效', $data = null) {
         return $this->result($data, 0, $msg);
     }
 
+    // 成功时重定向
     protected function success($msg = '操作成功', $url = null, $data = '', $wait = 3, array $header = [])
     {
         if ($url == null) {
@@ -225,6 +171,7 @@ class Backend extends Controller
         $this->redirect($url, $data, 302, ['success_message' => $msg]);
     }
 
+    // 失败时重定向
     protected function error($msg = '操作失败', $url = null, $data = '', $wait = 3, array $header = [])
     {
         if ($url == null) {
@@ -236,5 +183,12 @@ class Backend extends Controller
         }
 
         $this->redirect($url, $data, 302, ['error_message' => $msg, 'form_info' => $this->request->param()]);
+    }
+
+    // 私有方法
+    private function _initDynamicConfig() {
+        // 动态配置分页
+        $pathInfo = $this->request->pathinfo();
+        config('paginate.path', "#sub={$pathInfo}");
     }
 }
