@@ -57,24 +57,10 @@ class Backend extends Controller
     protected function fetch($template = '', $vars = [], $replace = [], $config = [])
     {
         parent::assign([
-            'menus' => $this->getLeftMenu(),
-            'sys' => $this->getSysInfo(),
             'user' => $this->getUserInfo(),
             'site' => $this->getSite()
         ]);
         return parent::fetch($template, $vars, $replace, $config);
-    }
-
-    public function getSysInfo() {
-        $sysInfo = new SysInfo();
-        return [
-            'lang'    => $sysInfo->getLang(),
-            'browser' => $sysInfo->getBrowser(),
-            'ip'      => $sysInfo->getIp(),
-            'os'      => $sysInfo->getOS(),
-            'city'    => $sysInfo->getCity(),
-            'date'    => date('Y-m-d')
-        ];
     }
 
     public function getSite() {

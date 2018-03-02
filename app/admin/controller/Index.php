@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\admin\common\Backend;
+use app\admin\common\SysInfo;
 use app\admin\model\AdminUsers;
 use app\admin\model\Syslogs;
 use app\admin\model\AdminLogs;
@@ -27,14 +28,29 @@ class Index extends Backend {
             'adminuser_count'=>$admin_user_count,
             'syslog_count'=>$syslog_count,
             'admin_log_count'=>$admin_log_count,
-            'admin_menu_count' => $admin_menu_count
+            'admin_menu_count' => $admin_menu_count,
+            'sys' => $this->_getSysInfo()
         ]);
 
         return $this->fetch();
-
     }
 
     public function index() {
+        $this->assign([
+            'menus' => $this->getLeftMenu()
+        ]);
         return $this->fetch('template/layout');
+    }
+
+    private function _getSysInfo() {
+        $sysInfo = new SysInfo();
+        return [
+            'lang'    => $sysInfo->getLang(),
+            'browser' => $sysInfo->getBrowser(),
+            'ip'      => $sysInfo->getIp(),
+            'os'      => $sysInfo->getOS(),
+            'city'    => $sysInfo->getCity(),
+            'date'    => date('Y-m-d')
+        ];
     }
 }
