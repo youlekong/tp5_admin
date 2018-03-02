@@ -18,6 +18,7 @@ class Backend extends Controller
     protected $param;
     protected $id;
     protected $uid;
+    protected $sub_url;
 
 
     public function __construct()
@@ -28,6 +29,8 @@ class Backend extends Controller
         $this->id = isset($this->param['id']) ? $this->param['id'] : -1;
 
         $this->uid = Session::get('user.id');
+
+        $this->sub_url = $this->request->pathinfo();
 
         parent::__construct();
     }
@@ -89,16 +92,34 @@ class Backend extends Controller
     }
 
     protected function getLeftMenu() {
-        $menu = Db::name('admin_menus')
-            ->where(['is_show' => ['=', '1']])
-            ->order('sort_id asc,id asc')
-            ->field('id,title,url,icon,is_show,parent_id')
-            ->column('*', 'id');
+        $auth = new AdminAuth();
+        $menu = $auth->getMenuList(Session::get('user.id'), 1);
 
-        $tree = new Tree();
         $max_level  = 0;
         $current_id = 1;
         $parent_ids = array(0 => 0);
+
+//        $current_nav = ['', ''];
+        foreach ($menu as $k => $v) {
+            if ($v['url'] == $this->sub_url) {
+                $parent_ids  = $this->getMenuParent($menu, $v['id']);
+                $current_id  = $v['id'];
+//                $current_nav = $this->getCurrentNav($menu, $v['id']);
+            }
+        }
+        if ($parent_ids == false) {
+            $parent_ids = array(0 => 0);
+        }
+//        $menu = Db::name('admin_menus')
+//            ->where(['is_show' => ['=', '1']])
+//            ->order('sort_id asc,id asc')
+//            ->field('id,title,url,icon,is_show,parent_id')
+//            ->column('*', 'id');
+
+        $tree = new Tree();
+//        $max_level  = 0;
+//        $current_id = 1;
+//        $parent_ids = array(0 => 0);
 
         foreach ($menu as $k => $v) {
             $url               = '#sub=' . $v['url'];//url($v['url']);
@@ -145,6 +166,42 @@ class Backend extends Controller
         return $tree->get_authTree(0, $current_id, $parent_ids);
     }
 
+    protected function getMenuParent($arr, $myid, $parent_ids = array())
+    {
+        $a = $newarr = array();
+        if (is_array($arr)) {
+            foreach ($arr as $id => $a) {
+                if ($a['id'] == $myid) {
+                    if ($a['parent_id'] != 0) {
+                        array_push($parent_ids, $a['parent_id']);
+                        $parent_ids = $this->getMenuParent($arr, $a['parent_id'], $parent_ids);
+                    }
+                }
+            }
+        }
+        return !empty($parent_ids) ? $parent_ids : false;
+    }
+
+//    protected function getCurrentNav($arr, $myid, $parent_ids = array(), $current_nav = '')
+//    {
+//        $a = $newarr = array();
+//        if (is_array($arr)) {
+//            foreach ($arr as $id => $a) {
+//                if ($a['id'] == $myid) {
+//                    if ($a['parent_id'] != 0) {
+//                        array_push($parent_ids, $a['parent_id']);
+//                        $ru          = '<li><a><i class="fa ' . $a['icon'] . '"></i> ' . $a['title'] . '</a></li>';
+//                        $current_nav = $ru . $current_nav;
+//                        $temp_result = $this->getCurrentNav($arr, $a['parent_id'], $parent_ids, $current_nav);
+//                        $parent_ids  = $temp_result[0];
+//                        $current_nav = $temp_result[1];
+//                    }
+//                }
+//            }
+//        }
+//        return !empty([$parent_ids, $current_nav]) ? [$parent_ids, $current_nav] : false;
+//    }
+
     // ajax成功
     public function ajaxSuccess($msg, $data = null) {
         return $this->result($data, 1, $msg);
@@ -167,7 +224,6 @@ class Backend extends Controller
 
         $this->redirect($url, $data, 302, ['success_message' => $msg]);
     }
-
 
     protected function error($msg = '操作失败', $url = null, $data = '', $wait = 3, array $header = [])
     {
