@@ -95,10 +95,7 @@
             <section class="content-header">
                 <h1 class="title"></h1>
                 <ol class="breadcrumb">
-                    {if isset($webData['current_nav']) && !empty($webData['current_nav'])}
-                    <li><a href="{:url('admin/index/index')}"><i class="fa fa-home"></i> 主页</a></li>
-                    {$webData['current_nav']}
-                    {/if}
+                    <li><a href="/admin/index/index"><i class="fa fa-home"></i> 主页 </a></li>
                 </ol>
             </section>
 

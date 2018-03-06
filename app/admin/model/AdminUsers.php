@@ -40,6 +40,8 @@ class AdminUsers extends Model
             if (!is_dir($path))
                 @mkdir($path);
             $value = config('admin_avatar.upload_url'). $value;
+        } else {
+            $value = config('admin_avatar.upload_url'). 'avatar.png';
         }
         return $value;
     }
