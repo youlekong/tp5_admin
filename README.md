@@ -1,8 +1,11 @@
-# 框架
 
-thinkphp5
+#### 内容管理
 
-# 功能
+##### 框架
+
+thinkphp5 + AAdminLTE
+
+##### 功能
 
 后台管理：app/admin
 微信管理：app/admin
