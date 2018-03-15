@@ -8,10 +8,9 @@ class Comment extends Base
 {
     public function add() {
         if ($this->request->isPost()) {
-            $result = $this->validate($this->request->param(), 'BlogComment.add');
+            $result = $this->validate($this->request->param(), 'CommentValidate.add');
             if ($result === false)
                 return $this->error($result);
-
             $comment = BlogComments::create($this->request->param());
             $rediectUrl = '/blog/index/post?id=' . $this->request->param('a_id');
             if ($comment)

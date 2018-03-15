@@ -37,9 +37,10 @@ class BlogComment extends Backend {
         $result = BlogComments::destroy(function ($query) use ($id) {
             $query->whereIn('id', $id);
         });
+        local_log($result);
         if ($result)
-            return $this->success();
+            return $this->ajaxSuccess();
 
-        return $this->error('删除失败');
+        return $this->ajaxError('删除失败');
     }
 }

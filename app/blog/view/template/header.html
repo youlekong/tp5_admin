@@ -5,7 +5,7 @@
             <div class="col-sm-12">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/blog/index/index">
-                        <img alt="Brand" src="__IMAGES__/brand.png">
+                        <img alt="Brand" src="">
                     </a>
                     <span class="nav-toggle-button collapsed nav-toggle-right" data-toggle="collapse" data-target="#main-menu">
                         <span class="sr-only">Toggle navigation</span>
@@ -14,17 +14,8 @@
                 </div>
                 <div class="collapse navbar-collapse menu" id="main-menu">
                     <ul class="nav navbar-nav navbar-left">
-                        <!--<li class="nav-current" role="presentation"><a href="{:url('/blog/index/posts')}">首页</a></li>-->
+                        <li role="presentation"><a href="/blog/index/posts">首页</a></li>
                         {foreach name='cates' item='cate'}
-                            {if ($cate.id == $Request.param.cid)}
-                            <li class="nav-current" role="presentation">
-                                {if $cate.id == -1}
-                                <a href="/blog/index/about">{$cate.name}</a>
-                                {else /}
-                                <a href="/blog/index/posts?cid={$cate.id}">{$cate.name}</a>
-                                {/if}
-                            </li>
-                            {else /}
                             <li role="presentation">
                                 {if $cate.id == -1}
                                 <a href="/blog/index/about">{$cate.name}</a>
@@ -32,9 +23,8 @@
                                 <a href="/blog/index/posts?cid={$cate.id}">{$cate.name}</a>
                                 {/if}
                             </li>
-                            {/if}
                         {/foreach}
-                        <!--<li role="presentation"><a href="/blog/index/about">关于</a></li>-->
+                        <li role="presentation"><a href="/blog/index/about">关于</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>

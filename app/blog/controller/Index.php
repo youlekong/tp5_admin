@@ -13,10 +13,12 @@ class Index extends Base
     protected $prevItem = null;
     protected $nextItem = null;
 
+    // 引导页
     public function index() {
         return view();
     }
 
+    // 文章列表页
     public function posts() {
         $model = new BlogArticles();
         if ($this->cid > 0) {
@@ -42,6 +44,7 @@ class Index extends Base
         return view();
     }
 
+    // 文章详情页
     public function post() {
         $model = new BlogArticles();
         $article = $model->with('cate')->find($this->id);
@@ -102,10 +105,12 @@ class Index extends Base
         $this->nextItem = $next;
     }
 
+    // 关于
     public function about() {
         return view();
     }
 
+    // 搜索
     public function search() {
         $params = $this->request->param();
         $model = new BlogArticles();
@@ -145,8 +150,6 @@ class Index extends Base
             $child->children = $children;
             unset($children);
         }
-
-//        local_log(collection($parents)->toArray());
 
         $this->assign([
             'comments' => $parents,

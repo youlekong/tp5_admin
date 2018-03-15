@@ -14,12 +14,15 @@ class Base extends Controller
     protected $cid = -1;
 
     public function _initialize() {
+        // 用户id
         $id = $this->request->param('id');
         $this->id = ( isset($id) && is_numeric($id) ) ? $id : -1;
 
+        // tag id
         $tid = $this->request->param('tid');
         $this->tid = ( isset($tid) && is_numeric($tid) ) ? $tid : -1;
 
+        // category id
         $cid = $this->request->param('cid');
         $this->cid = ( isset($cid) && is_numeric($cid) ) ? $cid : -1;
 
@@ -36,6 +39,7 @@ class Base extends Controller
                 ->select();
     }
 
+    // 最新文章
     public function _getFreshArticles() {
         return BlogArticles::where('id', '>', '0')
                 ->field('id, title')
@@ -44,32 +48,15 @@ class Base extends Controller
                 ->select();
     }
 
+    // 类别
     public function _getAllCategories() {
-        $cates = BlogCates::all();
-        array_unshift($cates, new BlogCates([
-            'id' => 0,
-            'name' => '首页'
-        ]));
-        array_push($cates, new BlogCates([
-            'id' => -1,
-            'name' => '关于',
-        ]));
-        return $cates;
+        return BlogCates::all();
     }
 
+    // 标签云
     public function _getAllTags() {
         return BlogTags::all();
     }
-
-    //重写fetch
-//    protected function fetch($template = '', $vars = [], $replace = [], $config = [])
-//    {
-//        //左侧菜单
-//        $this->webData['left_menu'] = $this->getLeftMenu();
-//
-//        parent::assign(['webData' => $this->webData]);
-//        return parent::fetch($template, $vars, $replace, $config);
-//    }
 
     protected function success($msg = '操作成功', $url = null, $data = '', $wait = 3, array $header = [])
     {
