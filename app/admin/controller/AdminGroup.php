@@ -36,7 +36,7 @@ class AdminGroup extends Backend
             $adminGroup = new AdminGroups($param);
             $adminGroup->allowField(true)->save($param);
             if ($adminGroup)
-                return $this->ajaxSuccess('添加成功', ['url' => 'index']);
+                return $this->ajaxSuccess('添加成功', ['url' => '/admin/admin_group/index']);
 
             return $this->ajaxError('添加失败');
         }
@@ -74,8 +74,9 @@ class AdminGroup extends Backend
 
     public function del() {
         $param = $this->request->param();
+        $id = $param['id'];
         if ( $param['id'] === 1)
-            return $this->error('此角色无法删除');
+            return $this->ajaxError('此角色无法删除');
 
         $result = AdminGroups::destroy(function ($query) use ($id) {
             $query->whereIn('id', $id);
@@ -84,13 +85,12 @@ class AdminGroup extends Backend
         if ($result) {
             //删除用户与角色关联记录
             $adminGroupAccess = new AdminGroupAccess();
-            $result = $adminGroupAccess->whereIn('group_id', $param['id'])->delete();
-            if (!$result) {
-                return $this->error('角色关联数据删除失败！');
-            }
-            return $this->success();
+            $adminGroupAccess->whereIn('group_id', $param['id'])->delete();
+
+            return $this->ajaxSuccess();
         }
-        return $this->error();
+
+        return $this->ajaxError();
     }
 
     public function access() {

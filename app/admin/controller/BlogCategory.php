@@ -68,8 +68,8 @@ class BlogCategory extends Backend {
             $query->whereIn('id', $id);
         });
         if ($result)
-            return $this->success();
+            return $this->ajaxSuccess();
 
-        return $this->error('删除失败');
+        return $this->ajaxError('删除失败');
     }
 }

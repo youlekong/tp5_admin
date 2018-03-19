@@ -147,11 +147,9 @@ class AdminUser extends Backend
             if ($result) {
                 //删除用户与角色关联记录
                 $adminGroupAccess = new AdminGroupAccess();
-                $result = $adminGroupAccess->whereIn('uid', $id)->delete();
-                if (!$result) {
-                    return $this->error('角色关联数据删除失败！');
-                }
-                return $this->success('删除成功', ['url' => '/admin/admin_user/index']);
+                $adminGroupAccess->whereIn('uid', $id)->delete();
+
+                return $this->ajaxSuccess('删除成功', ['url' => '/admin/admin_user/index']);
             }
         }
 

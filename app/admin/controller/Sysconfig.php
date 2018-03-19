@@ -27,14 +27,14 @@ class Sysconfig extends Backend
             $result = $this->validate($param, 'Sysconfig.add');
 
             if (true !== $result) {
-                return $this->error($result);
+                return $this->ajaxError($result);
             }
 
-            $result = Sysconfigs::create($param);
+            $result = Sysconfigs::create($param, ['name', 'code', 'content', 'description']);
             if ($result) {
-                return $this->success();
+                return $this->ajaxSuccess('添加成功', ['url' => 'admin/sysconfig/index']);
             }
-            return $this->error();
+            return $this->ajaxError();
         }
         return $this->fetch();
     }
@@ -64,19 +64,13 @@ class Sysconfig extends Backend
 
     public function del()
     {
-        $protected_ids = range(1,100);
-        if(in_array($this->request->param('id'),$protected_ids)){
-            return $this->error('系统限制，无法删除');
-        }
+        $id = $this->id;
+        $result = Sysconfigs::destroy(function ($query) use ($id) {
+            $query->whereIn('id', $id);
+        });
+        if ($result)
+            return $this->ajaxSuccess();
 
-        if (empty($this->id)) {
-            return $this->error('请选择需要删除的数据');
-        }
-
-        $result = Sysconfigs::destroy($this->request->param('id'));
-        if ($result) {
-            return $this->success();
-        }
-        return $this->error('删除失败');
+        return $this->ajaxError('删除失败');
     }
 }
