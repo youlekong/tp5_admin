@@ -100,7 +100,7 @@
                 </div>
             </form>
         </header>
-        <div style="overflow: auto; background: #fff;">
+        <div style="overflow: auto; background: #fff; width: 100%;">
             <section class="writing">
                 <input type="text" id='title' placeholder="标题">
                 <textarea name="md" id="md" placeholder="正文"></textarea>
@@ -114,6 +114,10 @@
 <script>
     var params = {}
     window.onload = function() {
+        setTimeout(function() {
+            adjustSize();
+        }, 1000);
+
         var paramsStr = location.search.substring(1)
         params = _paramsFromForm(paramsStr)
         $('.directory').text(params.directory)
@@ -146,6 +150,12 @@
         })
     }
 
+    function adjustSize() {
+        var h = document.querySelector('.preview').offsetHeight
+        if (h > window.innerHeight)
+            document.querySelector('#md').style.height = h;
+    }
+
     /*
      目录
      */
@@ -164,6 +174,8 @@
 
         setTimeout(function() {
             $('#txt').html(article)
+
+            document.querySelector('#md').style.height = document.querySelector('.preview').offsetHeight
         }, 1000)
     })
     $('#title').keyup(function() {
