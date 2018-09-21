@@ -3,10 +3,12 @@
             onclick="dels()">
         删除
     </button>
+    {if "[hideAdd]" !== "true" }
     <div class="pull-right">
         <a href="{:hash_add()}" class="btn btn-sm btn-default pull-right">
             <i class="fa fa-plus"></i>
             新增
         </a>
     </div>
+    {/if}
 </div>

@@ -142,6 +142,18 @@ class AdminMenu extends Backend
     }
 
     public function del() {
+        if ($this->request->isGet()) {
+            $id = $this->request->param('id');
+            $result = AdminMenus::destroy(function ($query) use ($id) {
+                $query->whereIn('id', $id);
+            });
+
+            if ($result) {
+                return $this->ajaxSuccess('删除成功', ['url' => '/admin/admin_user/index']);
+            }
+        }
+
+        return $this->ajaxError('删除失败', ['url' => '/admin/admin_user/index']);
 
     }
 

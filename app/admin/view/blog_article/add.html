@@ -71,7 +71,7 @@
 </div>
 
 <script>
-    var info = '{$info}';
+    var info = '{empty($info) ? $info : ""}';
     $(function () {
         $('.ueditor').append($('#editor').clone(true));
         $('#editor').show().find('#edui1, #edui1_iframeholder').width('100%');
