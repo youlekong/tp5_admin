@@ -45,8 +45,9 @@ class Upload
 	}
 
 	private function deleteFileBlob() {
-		for($i = 1; i <= $this->totalBlobNum; $i++)
-			@unlink($this->filepath . DIRECTORY_SEPARATOR . $this->fileName . '__' . $i)
+		for($i = 1; i <= $this->totalBlobNum; $i++) {
+			@unlink($this->filepath . DIRECTORY_SEPARATOR . $this->fileName . '__' . $i);
+		}
 	}
 
 	public function apiReturn() {

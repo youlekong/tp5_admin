@@ -75,7 +75,7 @@ class File
 
 	// 删除文件夹，如果文件夹内有文件则先删除文件
 	public function delDir($dir) {
-		$dh = opendir($dir)
+		$dh = opendir($dir);
 		while ($file = readdir($dh)) {
 			if ($file != "." && $file != "..") {
 				$fullPath = $dir . "/" . $file;
