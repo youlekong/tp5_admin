@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\admin\controller\admin;
 
 use app\admin\common\Backend;
 use app\admin\model\AdminGroups;
@@ -9,7 +9,7 @@ use app\admin\model\AdminMenus;
 use think\Session;
 use tools\Tree;
 
-class AdminGroup extends Backend
+class Group extends Backend
 {
     public function index() {
         $adminGroups = new AdminGroups();

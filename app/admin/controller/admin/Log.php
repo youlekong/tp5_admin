@@ -1,13 +1,13 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\admin\controller\admin;
 
 use app\admin\common\Backend;
 use app\admin\model\AdminLogs;
 use app\admin\model\AdminUsers;
 use crypt\Crypt;
 
-class AdminLog extends Backend
+class Log extends Backend
 {
     public function index() {
         $logs = new AdminLogs();

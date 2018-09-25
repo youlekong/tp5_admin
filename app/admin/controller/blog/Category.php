@@ -1,11 +1,11 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\admin\controller\blog;
 
 use app\admin\common\Backend;
 use app\admin\model\BlogCates;
 
-class BlogCategory extends Backend {
+class Category extends Backend {
 
     public function index() {
         $model = new BlogCates();

@@ -1,12 +1,12 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\admin\controller\blog;
 
 use app\admin\common\Backend;
 use app\admin\model\BlogArticles;
 use app\admin\model\BlogCates;
 
-class BlogArticle extends Backend
+class Article extends Backend
 {
     public function index() {
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\admin\controller\admin;
 
 use app\admin\common\Backend;
 use app\admin\model\AdminGroups;
 use app\admin\model\AdminUsers;
 use app\admin\model\AdminGroupAccess;
 
-class AdminUser extends Backend
+class User extends Backend
 {
     public function index()
     {

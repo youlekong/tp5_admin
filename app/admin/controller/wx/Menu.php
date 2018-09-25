@@ -1,11 +1,11 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\admin\controller\wx;
 
 use app\admin\common\Backend;
 use app\admin\model\WxMenus;
 
-class WxMenu extends Backend
+class Menu extends Backend
 {
     public function index() {
 

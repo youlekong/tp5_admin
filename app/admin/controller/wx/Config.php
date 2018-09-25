@@ -1,11 +1,11 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\admin\controller\wx;
 
 use app\admin\common\Backend;
 use think\Db;
 
-class WxConfig extends Backend {
+class Config extends Backend {
 
     public function index() {
 

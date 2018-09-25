@@ -1,11 +1,11 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\admin\controller\blog;
 
 use app\admin\common\Backend;
 use app\admin\model\BlogComments;
 
-class BlogComment extends Backend {
+class Comment extends Backend {
 
     public function index() {
         $comments = new BlogComments();

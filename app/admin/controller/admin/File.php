@@ -1,12 +1,12 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\admin\controller\admin;
 
 use app\admin\common\Backend;
 use app\admin\model\AdminFiles;
 use think\Session;
 
-class AdminFile extends Backend
+class File extends Backend
 {
     public function index()
     {

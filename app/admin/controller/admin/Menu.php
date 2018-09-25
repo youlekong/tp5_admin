@@ -1,6 +1,6 @@
 <?php
 
-namespace app\admin\controller;
+namespace app\admin\controller\admin;
 
 use app\admin\common\Backend;
 use app\admin\model\AdminMenus;
@@ -8,7 +8,7 @@ use think\Session;
 use tools\Tree;
 use think\Db;
 
-class AdminMenu extends Backend
+class Menu extends Backend
 {
     public function index() {
         $admin_menus = new AdminMenus();
